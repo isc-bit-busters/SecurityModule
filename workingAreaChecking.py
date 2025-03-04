@@ -9,7 +9,8 @@ class Sphere():
         self.y0 = y0
         self.z0 = z0
         self.r = r
-                
+        
+        
         num_points = 50
         theta = np.linspace(0, 2 * np.pi, num_points)  # Azimuthal angle
         phi = np.linspace(0, np.pi, num_points)      # Polar angle
