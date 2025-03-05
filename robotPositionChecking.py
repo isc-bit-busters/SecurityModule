@@ -4,7 +4,7 @@ import math
 class RobotPositonChecking(): 
 
     def __init__(self):
-        # make a struct to stock min distance btw 2 joints
+        # store min distance btw 2 joints
         pass
 
 
