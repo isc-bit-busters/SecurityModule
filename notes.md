@@ -21,6 +21,8 @@ http://perso-laris.univ-angers.fr/~boimond/UR3e_User_Manual_en_Global.pdf --> sp
 
 https://www.bila-as.com/media/10op3oof/710-943-00_ur3e_user_manual_en_global.pdf --> for safe home position 
 
+to check safe angles --> https://www.rosroboticslearning.com/jacobian
+to check safe angles --> approche plus naif distance d'un obstacles 
 
 Mercredi --> compreansion du système d'axe du robot, simulateur et ro bot pphysiqueont un système d'axes différents 
         --> test d'un dessign sur le cube 

@@ -1,0 +1,36 @@
+services:
+  cpu:
+    image: 3de7f9381e14
+    container_name: 3de7f9381e14
+    privileged: true
+    network_mode: host
+    command: /bin/bash
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - $XAUTHORITY:/root/.Xauthority
+      - /home/marta/Projects/SecurityModule/test:/root/ws_moveit/src/moveit2_tutorials/iscoin_driver/examples/testDir/
+      - /home/marta/Projects/SecurityModule/test2:/root/test2
+    environment:
+      QT_X11_NO_MITSHM: 1
+      DISPLAY: $DISPLAY
+  gpu:
+    image: iscoin-simulator
+    container_name: iscoin_simulator
+    privileged: true
+    network_mode: host
+    command: /bin/bash
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - $XAUTHORITY:/root/.Xauthority
+    environment:
+      QT_X11_NO_MITSHM: 1
+      DISPLAY: $DISPLAY
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: all
