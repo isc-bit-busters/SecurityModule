@@ -3,7 +3,7 @@ import numpy as np
 """ This class allow to find actual position of each joint, knowing angles of each joint """
 
 
-class JointPosition:
+class ForwardKinematics:
     def __init__(self, angles: list):
         self.numJoints = len(angles)
         # DH parameters as numpy arrays
@@ -28,11 +28,11 @@ class JointPosition:
         
         # Declare transformation matrices as a 3D numpy array (6x4x4)
         self.matrices = np.zeros((self.numJoints, 4, 4))
-        self._build_matrices()
+        self._buildMatrices()
 
 
 
-    def _build_matrices(self):
+    def _buildMatrices(self):
         for i in range(self.numJoints):
             theta = self.angles[i]
             alpha = self.alpha[i]
@@ -78,6 +78,6 @@ class JointPosition:
 
 
 # Example usage
-test = JointPosition([5.410520681, 3.316125579, 1.029744259,3.473205211, 2.094395102, 1.570796327])
+test = ForwardKinematics([5.410520681, 3.316125579, 1.029744259,3.473205211, 2.094395102, 1.570796327])
 print(test.joints)
 print(test.getCoordinates())

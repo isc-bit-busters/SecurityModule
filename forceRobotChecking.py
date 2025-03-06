@@ -1,6 +1,6 @@
 
 
-class RobotForce(): 
+class TorqueRobotChecking(): 
     
     def __init__(self):
     
