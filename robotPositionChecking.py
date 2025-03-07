@@ -1,12 +1,12 @@
 import math
 
-from forwardKinematics.forwardKInematics import ForwardKinematics
+from test2.forwardKinematics import ForwardKinematic
 
 
 class RobotPositonChecking(): 
 
     def __init__(self, angles:list):
-        self.coordinates = ForwardKinematics(angles).getCoordinates()
+        self.coordinates = ForwardKinematic(angles).getCoordinates()
         self.safeDistancesFromTheGround= { # ipothetic values of minimun allowed distances of each joint from the ground base excluded
             2 : 3,
             3 : 5, 

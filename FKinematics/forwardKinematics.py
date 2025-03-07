@@ -3,8 +3,9 @@ import numpy as np
 """ This class allow to find actual position of each joint, knowing angles of each joint """
 
 
-class ForwardKinematics:
+class ForwardKinematic():
     def __init__(self, angles: list):
+
         self.numJoints = len(angles)
         # DH parameters as numpy arrays
         self.alpha = np.array([np.pi/2, 0, 0, np.pi/2, -np.pi/2, 0])
@@ -13,7 +14,6 @@ class ForwardKinematics:
         
         # Current angles as numpy array
         self.angles = np.array(angles)
-        print(self.angles[5])
         
         # Create joints dictionary with numpy arrays
         self.joints = {
@@ -29,7 +29,6 @@ class ForwardKinematics:
         # Declare transformation matrices as a 3D numpy array (6x4x4)
         self.matrices = np.zeros((self.numJoints, 4, 4))
         self._buildMatrices()
-
 
 
     def _buildMatrices(self):
@@ -53,14 +52,13 @@ class ForwardKinematics:
 
         for j in range(1, self.numJoints):  
             matricesDotProd[j] = np.dot(matricesDotProd[j-1], self.matrices[j]) 
-
-        print("Final Dot Product Matrices:\n", matricesDotProd)
         return matricesDotProd
 
     
 # fill a dict with final coords of each joint 
     def getCoordinates(self):
         finalDotProdMat = self._getDotProdMat()
+        
         finalCoordinates = {
             i+1:{
                 "x" : finalDotProdMat[i][0][3],
@@ -68,16 +66,11 @@ class ForwardKinematics:
                 "z" : finalDotProdMat[i][2][3]
             }
              
-            for i in range(1,len(finalDotProdMat))
+            for i in range(0,len(finalDotProdMat))
 
         }
         finalCoordinates[1] = { "x": self.matrices[0][0][3] ,"y":  self.matrices[0][1][3] , "z":  self.matrices[0][2][3]}
-    
+
+   
         return finalCoordinates
 
-
-
-# Example usage
-test = ForwardKinematics([5.410520681, 3.316125579, 1.029744259,3.473205211, 2.094395102, 1.570796327])
-print(test.joints)
-print(test.getCoordinates())
