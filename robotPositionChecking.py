@@ -1,11 +1,16 @@
 import math
 
-from test2.forwardKinematics import ForwardKinematic
+
+
+from forwardKinematics import ForwardKinematic
+
+
 
 
 class RobotPositonChecking(): 
 
     def __init__(self, angles:list):
+        self.angles = angles
         self.coordinates = ForwardKinematic(angles).getCoordinates()
         self.safeDistancesFromTheGround= { # ipothetic values of minimun allowed distances of each joint from the ground base excluded
             2 : 3,
@@ -24,18 +29,20 @@ class RobotPositonChecking():
         
 
     # Compute distance of each joint from the ground with a trigo approach 
-    def _computeDistanceFromGround(self, j):
-
-        j1 = self.coordinates[2] # base excluded
-        j2 = j
-
-        distanceBtwTwoJoint = self._computeDistanceBtwTwoJoints(j1,j2)
-        alphaAngle = int(list(j1)[0])
-        betaAngle =  int(list(j2)[0])
-        gammaAngle = 180 -(alphaAngle + betaAngle)
-
-        return distanceBtwTwoJoint * (math.sin(alphaAngle)/math.sin(gammaAngle))
+    def _computeDistanceFromGround(self, joint_index):
     
+        j1 = self.coordinates[1]  # Base joint (reference)
+        j2 = self.coordinates[joint_index]  # Target joint
+
+        distanceBtwTwoJoint = self._computeDistanceBtwTwoJoints(j1, j2)
+
+        alphaAngle = self.angles[1]  # Assuming Joint 2 corresponds to index 1
+        betaAngle = self.angles[joint_index]
+
+        gammaAngle = math.pi - (alphaAngle + betaAngle)
+
+        return distanceBtwTwoJoint * (math.sin(math.radians(alphaAngle)) / math.sin(math.radians(gammaAngle)))
+
 
 
     def checkingDistanceFromGround(self):
@@ -44,14 +51,19 @@ class RobotPositonChecking():
         distancesFromTheGround= {
             i+1 :{ self._computeDistanceFromGround(i)
                   
-            } for i in range(1,len(self.coordinates)) # base exluded
+            } for i in range(3,len(self.coordinates)) # base exluded
         } 
 
         for (keyReal, dReal), (keyMin, dMin) in zip(distancesFromTheGround.items(), self.safeDistancesFromTheGround.items()):
-            if dReal <= dMin :
+            if float(next(iter(dReal))) <= dMin :
                 checkingDistance[keyReal] = False
             else :
                 checkingDistance[keyReal] = True
 
         return checkingDistance
   
+
+
+if __name__ == "__main__":
+    test = RobotPositonChecking([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+    print(test.checkingDistanceFromGround())
