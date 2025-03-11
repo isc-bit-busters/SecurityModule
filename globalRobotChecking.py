@@ -6,15 +6,19 @@ from workingAreaChecking import WorkingAreaRobotChecking
 from urbasic.URBasic import ISCoin
 
 class GlobalRobotChecking():
-    def __init__(self, angles: list):
-        self.interval = 0.01
+    def __init__(self, angles: list,interval:float = None, holdAngles = None,iscoin = None):
+
+        self.interval = interval
         self.running = False
-        self.holdAngles = angles
+        if holdAngles is None:
+            self.holdAngles = angles
+        else:
+            self.holdAngles = holdAngles
         self.angles = angles
         self._thread = None  
         self._stop_event = threading.Event()  # Event to handle stopping
 
-        #self.iscoin = ISCoin(host="10.30.5.158", opened_gripper_size_mm=40)
+        #self.iscoin = iscoin
 
     def start(self):
         self.running = True  
@@ -40,24 +44,27 @@ class GlobalRobotChecking():
             self._thread.join()  
 
     def checkNextBehaviour(self):
-        highVariations, self.holdAngles = checkAngleVariation(self.angles, self.holdAngles, self.interval).checkVariation()
-        self.safeAreaChecking = WorkingAreaRobotChecking(0, 0, 0, 450, self.angles).checkPointsInHalfOfSphere()
+        highVariations = []
+        if all(self.holdAngles) != all(self.angles):
+            highVariations, self.holdAngles = checkAngleVariation(self.angles, self.holdAngles, self.interval).checkVariation()
+            print("High variations in the angles of the joints: ", highVariations)
+
+        self.safeAreaChecking = WorkingAreaRobotChecking(0, 0, 0, 0.5, self.angles).checkPointsInHalfOfSphere()
+        #WorkingAreaRobotChecking(0, 0, 0, 0.5, self.angles).draw()
         self.checkingDistanceFromTheGround = RobotPositonChecking(self.angles).checkingDistanceFromGround()
         if any(value is False for value in self.safeAreaChecking.values()):
             print("Robot is out of the working area")
         else:
             print("Robot is inside the working area")
 
-"""         if highVariations:
+        if highVariations:
             print("High variations in the angles of the joints: ", highVariations)
+        else: 
+            print("The angles of the joints are stable")
 
         if any(value is False for value in self.checkingDistanceFromTheGround.values()):  
-            print("Kinematics is wrong, do it again or put the robot back in its initial position ") """
+            print("Robot is too close to the ground") 
+        else:
+            print("Robot is at a safe distance from the ground")
 
-       
 
-# Example usage
-checking_task = GlobalRobotChecking([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])  
-checking_task.start()  # Start the task
-time.sleep(1)  # Run for 10 seconds
-checking_task.stop()  # Stop the task

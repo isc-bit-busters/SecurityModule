@@ -17,7 +17,6 @@ class WorkingAreaRobotChecking():
         if unitTest:
             self.coordinates = coordinates
 
-        print(self.coordinates)
         num_points = 50
         theta = np.linspace(0, 2 * np.pi, num_points)  # Azimuthal angle
         phi = np.linspace(0, np.pi, num_points)      # Polar angle
@@ -47,8 +46,6 @@ class WorkingAreaRobotChecking():
         if randomPoint[2] < 0:
             return False
             
-   
-
         # Check if the point is within the sphere's radius
         return (randomPoint[0] - self.x0)**2 + (randomPoint[1] - self.y0)**2 + (randomPoint[2] - self.z0)**2 <= self.r**2
 
@@ -96,7 +93,7 @@ if __name__ == "__main__":
                 1.4042,
                 -1.3193,
                 -1.5697,
-                -0.673], True, {1: {"x": 0, "y": 1, "z": 0},  # Outside (exceeds radius)
+                -0.673], True, {1: {"x": 800, "y": 800, "z": 800},  # Outside (exceeds radius)
                     2: {"x": 0, "y": 0, "z": 0},  # Outside (exceeds radius)
                     3: {"x": 0, "y": 0, "z": 0},  # Outside (exceeds radius)
                     4: {"x": -0, "y": 0, "z": 0},  # Inside
