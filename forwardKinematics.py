@@ -44,6 +44,7 @@ class ForwardKinematic():
                 [0,             np.sin(alpha),                 np.cos(alpha),                 d],
                 [0,             0,                             0,                             1]
             ])
+           
   # do dot prod of mat  
     def _getDotProdMat(self):
         matricesDotProd = np.zeros((self.numJoints, 4, 4))

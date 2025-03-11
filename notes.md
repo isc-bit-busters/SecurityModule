@@ -33,3 +33,9 @@ Mercredi --> compreansion du système d'axe du robot, simulateur et ro bot pphys
 
 Jeudi --> hand eye calibration pour la camera 
       --> generation d'une texture sur un cube, la texture est prise d'une image
+
+
+
+
+Joint Speed limit p.l-15 --> 1.15 degrees/s --> https://s3-eu-west-1.amazonaws.com/ur-support-site/61565/99454_UR3e_User_Manual_en_US.pdf
+Compute speed of each joint with angular speed 

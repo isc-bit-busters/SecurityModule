@@ -6,7 +6,6 @@ from forwardKinematics import ForwardKinematic
 
 
 
-
 class RobotPositonChecking(): 
 
     def __init__(self, angles:list):
