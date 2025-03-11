@@ -13,6 +13,7 @@ y=y0​+rsin(θ)sin(ϕ)
 z=z0​+rcos(ϕ)
 
 
+forward kinematics implmentation --> to have positions from  [here](https://www.universal-robots.com/articles/ur/application-installation/dh-parameters-for-calculations-of-kinematics-and-dynamics/) way to do fk with good params for ur3e in exel doc there is entiere processus to compute fk  
 
 https://www.universal-robots.com/articles/ur/robot-care-maintenance/max-joint-torques-cb3-and-e-series/ --> joint force
 
@@ -27,15 +28,12 @@ to check safe angles --> approche plus naif distance d'un obstacles --> https://
 
 paragraph 22 --> Param to garantee safety of robot
 
-Mercredi --> compreansion du système d'axe du robot, simulateur et ro bot pphysiqueont un système d'axes différents 
-        --> test d'un dessign sur le cube 
-        --> test d'une inverse kinématique à nous ( elle est pas encore fini )
-
-Jeudi --> hand eye calibration pour la camera 
-      --> generation d'une texture sur un cube, la texture est prise d'une image
 
 
 
 
 Joint Speed limit p.l-15 --> 1.15 degrees/s --> https://s3-eu-west-1.amazonaws.com/ur-support-site/61565/99454_UR3e_User_Manual_en_US.pdf
-Compute speed of each joint with angular speed 
+Compute speed of each joint with angular speed formula of angular speed --> https://en.wikipedia.org/wiki/Angular_velocity
+
+Compute distance with 2 joint interpreted with cylinders --> https://www.researchgate.net/figure/Distance-between-two-cylinders_fig1_282996677 --> similar to the distance between 2 point but this approach simplifies things too much (robotic arm is in 3d not 2d) so we have to know diameters of each part of the robotic arm to compute the distance between 2 joint 
+

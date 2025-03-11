@@ -21,7 +21,14 @@ class RobotPositonChecking():
 
         # store min distance btw 2 joints
 
-        
+        self.diameters = {
+            1: 0.1,      # to be defined
+            2: 0.1,
+            3: 0.1,
+            4: 0.1,
+            5: 0.1,
+            6: 0.1
+        }
 
 
     def _computeDistanceBtwTwoJoints(self,j1, j2):
