@@ -4,23 +4,29 @@ import numpy as np
 class ValidateRobotPosition():
     def __init__(self, allRobotPosition: list[list[list[float]]]):
         self.allRobotPosition = allRobotPosition
+        self.finalPositions = []
+        self.line= []
         for i in range(len(self.allRobotPosition)):
             self.robotPosition = self.allRobotPosition[i]
 
             self._validate(self.robotPosition[0], None)
-
+            self.line = []
             for i in range(1,len(self.robotPosition)):
                 self._validate(self.robotPosition[i], self.robotPosition[i-1])
+            self.finalPositions.append(self.line)
+
 
 
     def _validate(self, angles: list[float], holdAngles :list[float]):
-        checkingTasks = GlobalRobotChecking(angles, holdAngles=holdAngles)
-        checkingTasks.checkNextBehaviour()
+        checkingTasks = GlobalRobotChecking(angles,holdAngles=holdAngles)
+        self.line.append(checkingTasks.checkNextBehaviour())
 
 
 
 # Example of usage
 test = ValidateRobotPosition([np.array([[-1.8742882 ,  2.8890624 ,  2.16146255,  2.8037591 ,  1.5698303 ,
+                                         
+                                        
          2.83810067],
        [-1.8742882 ,  2.93628144,  1.30472434,  0.47168583, -1.5698303 ,
         -0.30349207],
@@ -124,3 +130,5 @@ test = ValidateRobotPosition([np.array([[-1.8742882 ,  2.8890624 ,  2.16146255, 
          2.04239964],
        [ 0.47160348,  0.23572983, -1.41534889, -0.392079  , -1.57125628,
          2.04239964]])])
+
+print(len(test.finalPositions[8]))

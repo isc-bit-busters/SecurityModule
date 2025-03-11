@@ -12,14 +12,15 @@ class RobotPositonChecking():
         self.angles = angles
         self.coordinates = ForwardKinematic(angles).getCoordinates()
         self.safeDistancesFromTheGround= { # ipothetic values of minimun allowed distances of each joint from the ground base excluded
-            2 : 3,
-            3 : 5, 
-            4 : 4, 
-            5 : 7,
-            6 : 8
+            2 : 0.01,
+            3 : 0.01, 
+            4 : 0.01, 
+            5 : 0.10,
+            6 : 0.01
         }
 
         # store min distance btw 2 joints
+
         
 
 
@@ -40,7 +41,7 @@ class RobotPositonChecking():
 
         gammaAngle = math.pi - (alphaAngle + betaAngle)
 
-        return distanceBtwTwoJoint * (math.sin(math.radians(alphaAngle)) / math.sin(math.radians(gammaAngle)))
+        return abs(distanceBtwTwoJoint * (math.sin(math.radians(alphaAngle)) / math.sin(math.radians(gammaAngle))))
 
 
 
@@ -52,17 +53,12 @@ class RobotPositonChecking():
                   
             } for i in range(3,len(self.coordinates)) # base exluded
         } 
-
         for (keyReal, dReal), (keyMin, dMin) in zip(distancesFromTheGround.items(), self.safeDistancesFromTheGround.items()):
             if float(next(iter(dReal))) <= dMin :
                 checkingDistance[keyReal] = False
             else :
                 checkingDistance[keyReal] = True
-
         return checkingDistance
   
 
 
-if __name__ == "__main__":
-    test = RobotPositonChecking([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-    print(test.checkingDistanceFromGround())
