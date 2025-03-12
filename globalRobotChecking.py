@@ -35,9 +35,7 @@ class GlobalRobotChecking():
         """The actual task that will be repeated"""
         i = 0
         while not self._stop_event.is_set():  # Continue running until stop is requested
-            #self.angles = self.iscoin.robot_control.get_actual_joint_positions().toList()
-            self.angles = [i,i,i,i,i,i]
-            i += 1
+            self.angles = self.iscoin.robot_control.get_actual_joint_positions().toList()
             self.checkNextBehaviour() 
             self.isValid = True 
             self._stop_event.wait(self.interval)  # Non-blocking sleep
@@ -87,8 +85,3 @@ class GlobalRobotChecking():
             return self.validPositions
 
 
-
-globalRobotChecking = GlobalRobotChecking([0,0,0,0,0,0], 0.5)
-globalRobotChecking.start()
-time.sleep(10)
-globalRobotChecking.stop()

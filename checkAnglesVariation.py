@@ -2,7 +2,7 @@ class checkAngleVariation():
     def __init__(self, angles:list, holdAngles:list, time):
         self.angles = angles
         self.holdangles = holdAngles
-        self.speedLimits = [1.15, 1.15, 1.15,1.15,1.15,0.02006] # rad/s this parameter could be lowered --> spped limit 1.15°/s
+        self.speedLimits = [1.15, 1.15, 1.15,1.15,1.15,1.15] # rad/s this parameter could be lowered --> spped limit 1.15°/s
         self.deltaT = time # seconds 
     
     def _angleVariation(self):
