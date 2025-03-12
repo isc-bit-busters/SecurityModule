@@ -1,3 +1,4 @@
+import time
 import threading
 
 from urbasic.URBasic import ISCoin
@@ -34,7 +35,9 @@ class GlobalRobotChecking():
         """The actual task that will be repeated"""
         i = 0
         while not self._stop_event.is_set():  # Continue running until stop is requested
-            self.angles = self.iscoin.robot_control.get_actual_joint_positions().toList()
+            #self.angles = self.iscoin.robot_control.get_actual_joint_positions().toList()
+            self.angles = [i,i,i,i,i,i]
+            i += 1
             self.checkNextBehaviour() 
             self.isValid = True 
             self._stop_event.wait(self.interval)  # Non-blocking sleep
@@ -49,9 +52,10 @@ class GlobalRobotChecking():
     # test effectued only for the real time checking
     def _beahviourForRealTime(self):
         highVariations = []
-        if len(set(self.angles)) == len(self.holdAngles):
-            #fix hold angles it doesn't change
-            highVariations, self.holdAngles = checkAngleVariation(self.angles, self.holdAngles, self.interval).checkVariation()
+        print(self.holdAngles)
+
+        highVariations, self.holdAngles = checkAngleVariation(self.angles, self.holdAngles, self.interval).checkVariation()
+        self.holdAngles = self.angles
         if highVariations:
             print("High variations in the angles of the joints: ", highVariations)
             self.isValid = False 
@@ -82,3 +86,9 @@ class GlobalRobotChecking():
             self.validPositions.append(self.angles)
             return self.validPositions
 
+
+
+globalRobotChecking = GlobalRobotChecking([0,0,0,0,0,0], 0.5)
+globalRobotChecking.start()
+time.sleep(10)
+globalRobotChecking.stop()
