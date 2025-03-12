@@ -1,5 +1,6 @@
 import unittest
 import numpy as np
+
 from workingAreaChecking import WorkingAreaRobotChecking
 
 class TestWorkingAreaRobotChecking(unittest.TestCase):

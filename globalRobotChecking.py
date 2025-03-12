@@ -1,12 +1,12 @@
 import threading
-import time
-from checkAnglesVariation import checkAngleVariation
-from robotPositionChecking import RobotPositonChecking
-from workingAreaChecking import WorkingAreaRobotChecking
+
 from urbasic.URBasic import ISCoin
+from .checkAnglesVariation import checkAngleVariation
+from .robotPositionChecking import RobotPositonChecking
+from    workingAreaChecking import WorkingAreaRobotChecking
 
 class GlobalRobotChecking():
-    def __init__(self, angles: list,interval:float = None, holdAngles = None,iscoin = None):
+    def __init__(self, angles: list[float],interval:float = None, holdAngles = None,iscoin:ISCoin = None):
 
         self.interval = interval
         self.running = False
@@ -18,7 +18,7 @@ class GlobalRobotChecking():
         self._thread = None  
         self._stop_event = threading.Event()  # Event to handle stopping
         self.deltaT = 0.01
-        #self.iscoin = iscoin
+        self.iscoin = iscoin
         self.validPositions = []
         self.isValid = True
 
@@ -32,10 +32,7 @@ class GlobalRobotChecking():
         """The actual task that will be repeated"""
         i = 0
         while not self._stop_event.is_set():  # Continue running until stop is requested
-            #self.angles = self.iscoin.robot_control.get_actual_joint_positions()
-            print(self.angles)
-            self.angles = [i,i,i,i,i,i]
-            i += 1
+            self.angles = self.iscoin.robot_control.get_actual_joint_positions()
             self.checkNextBehaviour() 
             self.isValid = True 
             self._stop_event.wait(self.interval)  # Non-blocking sleep

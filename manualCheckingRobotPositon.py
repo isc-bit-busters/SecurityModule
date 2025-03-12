@@ -1,5 +1,7 @@
-from globalRobotChecking import GlobalRobotChecking
 import numpy as np
+
+from globalRobotChecking import GlobalRobotChecking
+
 
 class ValidateRobotPosition():
     def __init__(self, allRobotPosition: list[list[list[float]]]):

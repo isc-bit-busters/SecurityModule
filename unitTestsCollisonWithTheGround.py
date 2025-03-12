@@ -1,7 +1,7 @@
 import unittest
+import numpy as np
 
 from robotPositionChecking import RobotPositonChecking
-import numpy as np
 class TestCollisionsWithTheGround(unittest.TestCase): 
     def setUp(self):
         self.angles  = [ [
