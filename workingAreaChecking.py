@@ -44,7 +44,9 @@ class WorkingAreaRobotChecking():
         # Check if the point is in the upper hemisphere
         if randomPoint[2] < 0:
             return False
-            
+        if randomPoint[1] < 0:
+            return False
+        
         # Check if the point is within the sphere's radius
         return (randomPoint[0] - self.x0)**2 + (randomPoint[1] - self.y0)**2 + (randomPoint[2] - self.z0)**2 <= self.r**2
 
@@ -87,16 +89,8 @@ class WorkingAreaRobotChecking():
 
 
 if __name__ == "__main__": 
-    test = WorkingAreaRobotChecking(0, 0, 0, 0.5, [  0.8978,
-                -1.6571,
-                1.4042,
-                -1.3193,
-                -1.5697,
-                -0.673], True, {1: {"x": 800, "y": 800, "z": 800},  # Outside (exceeds radius)
-                    2: {"x": 0, "y": 0, "z": 0},  # Outside (exceeds radius)
-                    3: {"x": 0, "y": 0, "z": 0},  # Outside (exceeds radius)
-                    4: {"x": -0, "y": 0, "z": 0},  # Inside
-                    5: {"x": 0, "y": 0, "z": -0},  # Inside
-                    6: {"x": 0, "y": -0, "z": 0},} ) # Inside)
+    pos1 = [0.35230425000190735,-0.7322418850711365,0.5806735197650355,-1.0719731015018006,4.915554523468018,0.31385645270347595]
+    pos2 = [2.711972236633301,-1.102702186708786,0.9782894293414515,-1.2463486355594178,4.384324073791504,-0.8515551725970667]
+    test = WorkingAreaRobotChecking(0, 0, 0, 1, pos1, False ) # Inside)
     print(test.checkPointsInHalfOfSphere()) 
     test.draw()
