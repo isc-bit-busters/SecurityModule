@@ -4,6 +4,7 @@ Version: 0.1
 Summary: A package to allow robot security
 Author: 6Figures
 Requires-Python: >=3.10
+Requires-Dist: security
 Requires-Dist: numpy
 Requires-Dist: urbasic
 Requires-Dist: matplotlib
