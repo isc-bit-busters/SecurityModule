@@ -6,7 +6,7 @@ import numpy as np
 class ForwardKinematic():
     def __init__(self, angles: list):
 
-        self.numJoints = len(angles)
+        self.numJoints = 6
         # DH parameters as numpy arrays
         self.alpha = np.array([np.pi/2, 0, 0, np.pi/2, -np.pi/2, 0])
         self.a = np.array([0, -0.24355, -0.2132, 0, 0, 0])
@@ -14,7 +14,6 @@ class ForwardKinematic():
         
         # Current angles as numpy array
         self.angles = np.array(angles)
-        
         # Create joints dictionary with numpy arrays
         self.joints = {
             i+1: {

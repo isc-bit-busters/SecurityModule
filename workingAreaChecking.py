@@ -34,7 +34,7 @@ class WorkingAreaRobotChecking():
         # Filter points where z > 0 (for the top hemisphere)
         points = np.vstack((x_flat, y_flat, z_flat)).T
 
-        # Only select points where z > 0
+        # Only select points where z < 0
         self.points_filtered = points[points[:, 2] < 0]
         self.points_filtered = points[points[:, 1] < 0]
 
@@ -46,7 +46,7 @@ class WorkingAreaRobotChecking():
             return False
         if randomPoint[1] < 0:
             return False
-        
+            
         # Check if the point is within the sphere's radius
         return (randomPoint[0] - self.x0)**2 + (randomPoint[1] - self.y0)**2 + (randomPoint[2] - self.z0)**2 <= self.r**2
 
