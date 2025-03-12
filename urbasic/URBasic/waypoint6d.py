@@ -357,6 +357,48 @@ class Joint6D(GenericWaypoint6D):
     return instance
   
   @staticmethod
+  def createFromRadList(jList : list[float]) -> 'Joint6D':
+    """ Create a joint waypoint from values.
+    
+    Args:
+      j1: The first joint value of the joint waypoint [rad]
+      j2: The second joint value of the joint waypoint [rad]
+      j3: The third joint value of the joint waypoint [rad]
+      j4: The fourth joint value of the joint waypoint [rad]
+      j5: The fifth joint value of the joint waypoint [rad]
+      j6: The sixth joint value of the joint waypoint [rad]
+      jList: a list containing the six joint waypoints, from j1 to j6 (so [j1,j2,j3,j4,j5,j6]) [rad,rad,rad,rad,rad,rad]
+    
+    Returns:
+      A new joint waypoint with the given values.
+    """
+    instance = Joint6D.__new__(Joint6D)
+    instance._initialized = True
+    instance.__init__(jList[0], jList[1], jList[2], jList[3], jList[4], jList[5])
+    return instance
+
+  @staticmethod
+  def createFromDegList(jList : list[float]) -> 'Joint6D':
+    """ Create a joint waypoint from values.
+    
+    Args:
+      j1: The first joint value of the joint waypoint [deg]
+      j2: The second joint value of the joint waypoint [deg]
+      j3: The third joint value of the joint waypoint [deg]
+      j4: The fourth joint value of the joint waypoint [deg]
+      j5: The fifth joint value of the joint waypoint [deg]
+      j6: The sixth joint value of the joint waypoint [deg]
+      jList: a list containing the six joint waypoints, from j1 to j6 (so [j1,j2,j3,j4,j5,j6]) [deg,deg,deg,deg,deg,deg]
+    
+    Returns:
+      A new joint waypoint with the given values.
+    """
+    instance = Joint6D.__new__(Joint6D)
+    instance._initialized = True
+    instance.__init__(radians(jList[0]), radians(jList[1]), radians(jList[2]), radians(jList[3]), radians(jList[4]), radians(jList[5]))
+    return instance
+
+  @staticmethod
   def createFromDegrees(j1 : float, j2 : float, j3 : float, j4 : float, j5 : float, j6 : float) -> 'Joint6D':
     """ Create a joint waypoint from values.
     

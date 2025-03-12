@@ -34,7 +34,7 @@ class WorkingAreaRobotChecking():
         # Filter points where z > 0 (for the top hemisphere)
         points = np.vstack((x_flat, y_flat, z_flat)).T
 
-        # Only select points where z > 0
+        # Only select points where z < 0
         self.points_filtered = points[points[:, 2] < 0]
         self.points_filtered = points[points[:, 1] < 0]
 
@@ -43,6 +43,8 @@ class WorkingAreaRobotChecking():
     def _isPointInHalfOfSphere(self, randomPoint):
         # Check if the point is in the upper hemisphere
         if randomPoint[2] < 0:
+            return False
+        if randomPoint[1] < 0:
             return False
             
         # Check if the point is within the sphere's radius
@@ -87,16 +89,11 @@ class WorkingAreaRobotChecking():
 
 
 if __name__ == "__main__": 
-    test = WorkingAreaRobotChecking(0, 0, 0, 0.5, [  0.8978,
-                -1.6571,
-                1.4042,
-                -1.3193,
-                -1.5697,
-                -0.673], True, {1: {"x": 800, "y": 800, "z": 800},  # Outside (exceeds radius)
-                    2: {"x": 0, "y": 0, "z": 0},  # Outside (exceeds radius)
-                    3: {"x": 0, "y": 0, "z": 0},  # Outside (exceeds radius)
-                    4: {"x": -0, "y": 0, "z": 0},  # Inside
-                    5: {"x": 0, "y": 0, "z": -0},  # Inside
-                    6: {"x": 0, "y": -0, "z": 0},} ) # Inside)
+    test = WorkingAreaRobotChecking(0, 0, 0, 0.5, [  0.9509,
+                -1.6623,
+                0.6353,
+                -0.5976,
+                -1.5722,
+                0.0], False ) # Inside)
     print(test.checkPointsInHalfOfSphere()) 
     test.draw()

@@ -1,9 +1,9 @@
 import threading
 
 from urbasic.URBasic import ISCoin
-from .checkAnglesVariation import checkAngleVariation
-from .robotPositionChecking import RobotPositonChecking
-from    workingAreaChecking import WorkingAreaRobotChecking
+from checkAnglesVariation import checkAngleVariation
+from robotPositionChecking import RobotPositonChecking
+from workingAreaChecking import WorkingAreaRobotChecking
 
 class GlobalRobotChecking():
     def __init__(self, angles: list[float],interval:float = None, holdAngles = None,iscoin:ISCoin = None):
@@ -12,12 +12,14 @@ class GlobalRobotChecking():
         self.running = False
         if holdAngles is None:
             self.holdAngles = angles
+            print("hold angles is none")
         else:
             self.holdAngles = holdAngles
+            print("here")
         self.angles = angles
         self._thread = None  
         self._stop_event = threading.Event()  # Event to handle stopping
-        self.deltaT = 0.01
+        self.deltaT = interval
         self.iscoin = iscoin
         self.validPositions = []
         self.isValid = True
@@ -32,7 +34,7 @@ class GlobalRobotChecking():
         """The actual task that will be repeated"""
         i = 0
         while not self._stop_event.is_set():  # Continue running until stop is requested
-            self.angles = self.iscoin.robot_control.get_actual_joint_positions()
+            self.angles = self.iscoin.robot_control.get_actual_joint_positions().toList()
             self.checkNextBehaviour() 
             self.isValid = True 
             self._stop_event.wait(self.interval)  # Non-blocking sleep
@@ -48,8 +50,8 @@ class GlobalRobotChecking():
     def _beahviourForRealTime(self):
         highVariations = []
         if len(set(self.angles)) == len(self.holdAngles):
+            #fix hold angles it doesn't change
             highVariations, self.holdAngles = checkAngleVariation(self.angles, self.holdAngles, self.interval).checkVariation()
-
         if highVariations:
             print("High variations in the angles of the joints: ", highVariations)
             self.isValid = False 
@@ -61,20 +63,20 @@ class GlobalRobotChecking():
         if self.interval is not None:
             self._beahviourForRealTime()
 
-        self.safeAreaChecking = WorkingAreaRobotChecking(0, 0, 0, 0.5, self.angles).checkPointsInHalfOfSphere()
-        #WorkingAreaRobotChecking(0, 0, 0, 0.5, self.angles).draw()
+        self.safeAreaChecking = WorkingAreaRobotChecking(0, 0, 0, 0.5, self.angles)
+        areaChecking = self.safeAreaChecking.checkPointsInHalfOfSphere()
         self.checkingDistanceFromTheGround = RobotPositonChecking(self.angles).checkingDistanceFromGround()
-        if any(value is False for value in self.safeAreaChecking.values()):
-            print("Robot is out of the working area")
-            self.isValid = False
-        else:
-            print("Robot is inside the working area")
+        #if any(value is False for value in areaChecking.values()):
+        #   print("Robot is out of the working area")
+        #   self.isValid = False
+      
+           # print("Robot is inside the working area")
 
-        if any(value is False for value in self.checkingDistanceFromTheGround.values()):  
-            print("Robot is too close to the ground") 
-            self.isValid = False
-        else:
-            print("Robot is at a safe distance from the ground")
+        #if any(value is False for value in self.checkingDistanceFromTheGround.values()):  
+        #    print("Robot is too close to the ground") 
+         #   self.isValid = False
+        #else:
+        #    print("Robot is at a safe distance from the ground")
      
         if  self.isValid:
             self.validPositions.append(self.angles)
