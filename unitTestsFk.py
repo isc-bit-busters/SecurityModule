@@ -2,7 +2,6 @@ import unittest
 
 from forwardKinematics import ForwardKinematic
 
-import ipdb
 
 
 class TestForwardKinematics(unittest.TestCase):

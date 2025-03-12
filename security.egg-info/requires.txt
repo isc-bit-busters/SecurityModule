@@ -1,0 +1,3 @@
+numpy
+urbasic
+matplotlib
