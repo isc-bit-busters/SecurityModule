@@ -65,7 +65,7 @@ class GlobalRobotChecking():
         if self.interval is not None:
             self._beahviourForRealTime()
 
-        self.safeAreaChecking = WorkingAreaRobotChecking(0, 0, 0, 0.5, self.angles)
+        self.safeAreaChecking = WorkingAreaRobotChecking(0, 0, 0, 0.7, self.angles)
         areaChecking = self.safeAreaChecking.checkPointsInHalfOfSphere()
         self.checkingDistanceFromTheGround = RobotPositonChecking(self.angles).checkingDistanceFromGround()
         #if any(value is False for value in areaChecking.values()):
