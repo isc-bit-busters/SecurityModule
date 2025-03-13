@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from robotPositionChecking import RobotPositonChecking
+from robotPositionChecking import DistanceFromGroundChecking
 class TestCollisionsWithTheGround(unittest.TestCase): 
     def setUp(self):
         self.angles  = [ [
@@ -43,7 +43,7 @@ class TestCollisionsWithTheGround(unittest.TestCase):
 
     def test_computeDistanceFromGround(self):
         for i in range(len(self.results_test_maths)):
-            self.robotPosition = RobotPositonChecking(self.angles[0])
+            self.robotPosition = DistanceFromGroundChecking(self.angles[0])
             results = self.robotPosition._computeDistanceFromGround(i+2)
             self.assertAlmostEqual(results, self.results_test_maths[i],delta=0.1)
 

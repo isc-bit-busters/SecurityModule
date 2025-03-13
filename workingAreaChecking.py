@@ -35,6 +35,7 @@ class WorkingAreaRobotChecking():
         points = np.vstack((x_flat, y_flat, z_flat)).T
 
         # Only select points where z < 0
+
         self.points_filtered = points[points[:, 2] < 0]
         self.points_filtered = points[points[:, 1] < 0]
 
@@ -70,13 +71,18 @@ class WorkingAreaRobotChecking():
         # Plot robot joint positions with color and size adjustments
         ax.scatter(x_vals, y_vals, z_vals, c='red', s=10, label="Robot Joints")
 
-    
+        for i in range(len(x_vals) - 1):  # Loop through points
+            ax.plot([x_vals[i], x_vals[i+1]],  # X-coordinates
+                    [y_vals[i], y_vals[i+1]],  # Y-coordinates
+                    [z_vals[i], z_vals[i+1]],  # Z-coordinates
+                    c='blue', linewidth=2)  # Blue lines
+
 
         # Labels and legend
         ax.set_xlabel("X-axis")
         ax.set_ylabel("Y-axis")
         ax.set_zlabel("Z-axis")
-
+        ax.set_zlim((0,1))
         plt.show()
 
 

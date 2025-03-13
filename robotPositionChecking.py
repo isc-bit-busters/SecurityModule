@@ -3,32 +3,22 @@ import math
 
 
 from forwardKinematics import ForwardKinematic
+from workingAreaChecking import WorkingAreaRobotChecking
 
 
 
-class RobotPositonChecking(): 
+class DistanceFromGroundChecking(): 
 
     def __init__(self, angles:list):
         self.angles = angles
         self.coordinates = ForwardKinematic(angles).getCoordinates()
         self.safeDistancesFromTheGround= { # ipothetic values of minimun allowed distances of each joint from the ground base excluded
-            2 : 0.01,
-            3 : 0.01, 
-            4 : 0.01, 
-            5 : 0.10,
-            6 : 0.01
+            3 : 0.1, 
+            4 : 0.1, 
+            5 : 0.1,
+            6: 0.2
         }
 
-        # store min distance btw 2 joints
-
-        self.diameters = {
-            1: 0.1,      # to be defined
-            2: 0.1,
-            3: 0.1,
-            4: 0.1,
-            5: 0.1,
-            6: 0.1
-        }
 
 
     def _computeDistanceBtwTwoJoints(self,j1, j2):
@@ -43,11 +33,10 @@ class RobotPositonChecking():
 
         distanceBtwTwoJoint = self._computeDistanceBtwTwoJoints(j1, j2)
 
-        alphaAngle = self.angles[1]  # Assuming Joint 2 corresponds to index 1
+        alphaAngle = self.angles[0]  # Assuming Joint 2 corresponds to index 1
         betaAngle = self.angles[joint_index]
 
         gammaAngle = math.pi - (alphaAngle + betaAngle)
-
         return abs(distanceBtwTwoJoint * (math.sin(math.radians(alphaAngle)) / math.sin(math.radians(gammaAngle))))
 
 
@@ -58,14 +47,38 @@ class RobotPositonChecking():
         distancesFromTheGround= {
             i+1 :{ self._computeDistanceFromGround(i)
                   
-            } for i in range(3,len(self.coordinates)) # base exluded
+            } for i in range(2,len(self.coordinates)) # base exluded
         } 
         for (keyReal, dReal), (keyMin, dMin) in zip(distancesFromTheGround.items(), self.safeDistancesFromTheGround.items()):
+            print(keyReal,dReal)
             if float(next(iter(dReal))) <= dMin :
                 checkingDistance[keyReal] = False
             else :
                 checkingDistance[keyReal] = True
-        return checkingDistance
-  
+        
+        return checkingDistance# return the last joint checking result for now 
+
+angleTest1 =[
+                0.9509,
+                -1.6623,
+                0.6353,
+                -0.5976,
+                -1.5722,
+                0.0
+            ]
+angleTest2 = [
+                0.9019,
+                -0.28,
+                1.7852,
+                -3.0774,
+                -1.5697,
+                -0.6689
+            ]
+workingAreaRobotChecking = WorkingAreaRobotChecking(0, 0, 0, 0.7, angleTest1)
+workingAreaRobotChecking.draw()
+print(workingAreaRobotChecking.checkPointsInHalfOfSphere())
+
+test = DistanceFromGroundChecking(angleTest1)
+print(test.checkingDistanceFromGround())
 
 

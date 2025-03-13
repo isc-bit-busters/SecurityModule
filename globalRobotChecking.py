@@ -3,7 +3,7 @@ import threading
 
 from urbasic.URBasic import ISCoin
 from checkAnglesVariation import checkAngleVariation
-from robotPositionChecking import RobotPositonChecking
+from robotPositionChecking import DistanceFromGroundChecking
 from workingAreaChecking import WorkingAreaRobotChecking
 
 class GlobalRobotChecking():
@@ -67,7 +67,7 @@ class GlobalRobotChecking():
 
         self.safeAreaChecking = WorkingAreaRobotChecking(0, 0, 0, 0.7, self.angles)
         areaChecking = self.safeAreaChecking.checkPointsInHalfOfSphere()
-        self.checkingDistanceFromTheGround = RobotPositonChecking(self.angles).checkingDistanceFromGround()
+        self.checkingDistanceFromTheGround = DistanceFromGroundChecking(self.angles).checkingDistanceFromGround()
         #if any(value is False for value in areaChecking.values()):
         #   print("Robot is out of the working area")
         #   self.isValid = False
