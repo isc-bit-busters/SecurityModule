@@ -9,23 +9,22 @@ class RobotCollisonWithItselfChecking:
         self.diameters = {
             1: 0.128,  # to be defined
             2: 0.128,
-            3: 0.128,
-            4: 0.128,
-            5: 0.128,
-            6: 0.128,
+            3: 0.05,
+            4: 0.05,
+            5: 0.01,
+            6: 0.01,
         }
         self.safeDistances = {
-            0: {1: 0.1, 2: 0.1, 3: 0.01, 4: 0.01, 5: 0.01},
-            1: {2: 0.1, 3: 0.1, 4: 0.01, 5: 0.01},
-            2: {3: 0.1, 4: 0.1, 5: 0.01},
-            3: {4: 0.1, 5: 0.1},
-            4: {5: 0.1},
+            1: {2: 0.01, 3: 0.01, 4: 0.01, 5: 0.01, 6: 0.01},
+            2: {3: 0.01, 4: 0.01, 5: 0.001, 6: 0.01},
+            3: {4: 0.01, 5: 0.01, 6: 0.01},
+            4: {5: 0.01, 6: 0.01},
+            5: {6: 0.01},
         }
         self.cylinders = {}
 
         self.coordinates = ForwardKinematic(angles).getCoordinates()
-        print("all cord", self.coordinates)
-        print()
+    
 
     def _createVectorCylinder(self, p1, q1):
         """Creation of a vector from two points
@@ -47,12 +46,10 @@ class RobotCollisonWithItselfChecking:
                 self._createCylinder(key, value, self.coordinates[key + 1])
             else:
                 break
-        print("cylinders", self.cylinders)
 
     def _computeDistanceBetweenTwoAxis(self, cylinderKey1, cylinderKey2):
         """Compute the distance between two axis/ lines"""
 
-        print(self.cylinders[cylinderKey1]["p"])
         p1 = self.cylinders[cylinderKey1]["p"]
         p2 = self.cylinders[cylinderKey2]["p"]
         p1_array = np.array([p1["x"], p1["y"], p1["z"]])
@@ -72,40 +69,66 @@ class RobotCollisonWithItselfChecking:
         dAxes = self._computeDistanceBetweenTwoAxis(cylinderKey1, cylinderKey2)
         r1 = self.cylinders[cylinderKey1]["r"]
         r2 = self.cylinders[cylinderKey2]["r"]
-
         return dAxes - (r1 + r2)
 
     def checkingCollisonWithItself(self):
         self._fillCylindersDict()
         cylinderDistances = {}
 
-        for key1, value1 in self.cylinders.items():
-            items_list = list(self.cylinders.items())  # Convert dict_items to a list
-            for key2, value2 in items_list[key1:]:  # Now slicing works
-                if key1 != key2:
-                    print(key1, key2)
+        cylinder_keys = list(self.cylinders.keys())  # Extract just the keys
+        
+        for i, key1 in enumerate(cylinder_keys):  
+            for key2 in cylinder_keys[i+1:]:  # Ensure unique comparisons
+                if key2 in self.safeDistances.get(key1, {}):  # Avoid KeyError
                     distance = self._computeDistanceBetweenTwoCylinders(key1, key2)
-                    print("here", self.safeDistances[key1][key2], "key", key1, key2)
-                    if distance < self.safeDistances[key1][key2]:
-                        cylinderDistances[key1] = False
+                    if abs(distance) < self.safeDistances[key1][key2]:
+                        cylinderDistances[(key1, key2)] = False
+                        print(distance)
                     else:
-                        cylinderDistances[key1] = True
+                        cylinderDistances[(key1, key2)] = True
 
         return cylinderDistances
 
+
     #
 
+collisionAngle1 = [
+                0.9509,
+                -1.6623,
+                1.8353,
+                -0.5976,
+                -1.5722,
+                0.0
+            ]
+safeAngle1 =  [
+               
+                0.9509,
+                -1.6623,
+                0.6353,
+                -0.5976,
+                -1.5722,
+                0.0
+            ]
+safeAngle2 = [
+                0.9509,
+                -1.6623,
+                0.6353,
+                -0.5976,
+                -1.5722,
+                0.0
+            ]
+collisionAngle2= [
+                0.9509,
+                -1.6623,
+                2.6353,
+                0.5976,
+                1.5722,
+                0.0
+            ]
 
 if __name__ == "__main__":
-    test = RobotCollisonWithItselfChecking(
-        [
-            0.9481282830238342,
-            -1.3380088073066254,
-            0.7121437231646937,
-            -1.0540800851634522,
-            -1.5575674215899866,
-            -0.5976246039019983,
-        ]
-    )
+    test1 = RobotCollisonWithItselfChecking( collisionAngle2 )
+    test2 = RobotCollisonWithItselfChecking( safeAngle2 )
 
-print(test.checkingCollisonWithItself())
+print(test1.checkingCollisonWithItself())
+print(test2.checkingCollisonWithItself())

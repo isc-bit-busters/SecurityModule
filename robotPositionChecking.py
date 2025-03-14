@@ -56,7 +56,7 @@ class DistanceFromGroundChecking():
             else :
                 checkingDistance[keyReal] = True
         
-        return checkingDistance# return the last joint checking result for now 
+        return checkingDistance
 
 angleTest1 =[
                 0.9509,
