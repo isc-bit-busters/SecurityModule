@@ -15,7 +15,7 @@ class RobotCollisonWithItselfChecking:
             6: 0.01,
         }
         self.safeDistances = {
-            1: {2: 0.01, 3: 0.01, 4: 0.01, 5: 0.01, 6: 0.01},
+            1: {2: 0.01, 3: 0.03, 4: 0.01, 5: 0.01, 6: 0.01},
             2: {3: 0.01, 4: 0.01, 5: 0.001, 6: 0.01},
             3: {4: 0.01, 5: 0.01, 6: 0.01},
             4: {5: 0.01, 6: 0.01},
@@ -80,10 +80,12 @@ class RobotCollisonWithItselfChecking:
         for i, key1 in enumerate(cylinder_keys):  
             for key2 in cylinder_keys[i+1:]:  # Ensure unique comparisons
                 if key2 in self.safeDistances.get(key1, {}):  # Avoid KeyError
+
                     distance = self._computeDistanceBetweenTwoCylinders(key1, key2)
+                    print(key1, key2,distance)
+
                     if abs(distance) < self.safeDistances[key1][key2]:
                         cylinderDistances[(key1, key2)] = False
-                        print(distance)
                     else:
                         cylinderDistances[(key1, key2)] = True
 
