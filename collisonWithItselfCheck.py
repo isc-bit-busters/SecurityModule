@@ -15,8 +15,8 @@ class RobotCollisonWithItselfChecking:
             6: 0.01,
         }
         self.safeDistances = {
-            1: {2: 0.01, 3: 0.03, 4: 0.01, 5: 0.01, 6: 0.01},
-            2: {3: 0.01, 4: 0.01, 5: 0.001, 6: 0.01},
+            1: {2: 0.01, 3: 0.02, 4: 0.02, 5: 0.02, 6: 0.01},
+            2: {3: 0.01, 4: 0.01, 5: 0.02, 6: 0.01},
             3: {4: 0.01, 5: 0.01, 6: 0.01},
             4: {5: 0.01, 6: 0.01},
             5: {6: 0.01},
@@ -49,7 +49,6 @@ class RobotCollisonWithItselfChecking:
 
     def _computeDistanceBetweenTwoAxis(self, cylinderKey1, cylinderKey2):
         """Compute the distance between two axis/ lines"""
-
         p1 = self.cylinders[cylinderKey1]["p"]
         p2 = self.cylinders[cylinderKey2]["p"]
         p1_array = np.array([p1["x"], p1["y"], p1["z"]])
@@ -60,16 +59,27 @@ class RobotCollisonWithItselfChecking:
             self.cylinders[cylinderKey1]["d"], self.cylinders[cylinderKey2]["d"]
         )
         crossProdNorm = np.linalg.norm(crossProd)
+        
+        if crossProdNorm == 0:
+            print(f"Warning: Cylinders {cylinderKey1} and {cylinderKey2} are parallel.")
+            return np.linalg.norm(p2MinusP1)  # Use a fallback distance
+
         dotProd = np.dot(p2MinusP1, crossProd)
-        return abs(dotProd / crossProdNorm)
+        distance = abs(dotProd / crossProdNorm)
+        
+        print(f"Distance between {cylinderKey1} and {cylinderKey2}: {distance}")
+        return distance
 
     def _computeDistanceBetweenTwoCylinders(self, cylinderKey1, cylinderKey2):
         """Compute the distance between two cylinders"""
-
         dAxes = self._computeDistanceBetweenTwoAxis(cylinderKey1, cylinderKey2)
-        r1 = self.cylinders[cylinderKey1]["r"]
-        r2 = self.cylinders[cylinderKey2]["r"]
+        r1 = self.cylinders[cylinderKey1]["r"]/2
+        r2 = self.cylinders[cylinderKey2]["r"]/2
+        
+        print(f"Radii: Cylinder {cylinderKey1} = {r1}, Cylinder {cylinderKey2} = {r2}")
+        
         return dAxes - (r1 + r2)
+
 
     def checkingCollisonWithItself(self):
         self._fillCylindersDict()
@@ -79,17 +89,19 @@ class RobotCollisonWithItselfChecking:
         
         for i, key1 in enumerate(cylinder_keys):  
             for key2 in cylinder_keys[i+1:]:  # Ensure unique comparisons
+                if key2 == key1 + 1:  # Skip consecutive cylinders
+                    continue
+                
                 if key2 in self.safeDistances.get(key1, {}):  # Avoid KeyError
-
                     distance = self._computeDistanceBetweenTwoCylinders(key1, key2)
-                    print(key1, key2,distance)
+                    print(key1, key2, distance)
 
-                    if abs(distance) < self.safeDistances[key1][key2]:
+                    if distance < self.safeDistances[key1][key2]:
                         cylinderDistances[(key1, key2)] = False
                     else:
                         cylinderDistances[(key1, key2)] = True
-
         return cylinderDistances
+
 
 
     #
@@ -127,10 +139,23 @@ collisionAngle2= [
                 1.5722,
                 0.0
             ]
+collisionAngle3 =[ 0.00001,
+                -3.13,
+                3.13,
+                0.000001,
+                0.000001,
+                0.000001]
 
+collisionAngle4 = [0.00001,
+                0.000001,
+                0.000001,
+                0.000001,
+                0.000001,
+                0.000001]
 if __name__ == "__main__":
-    test1 = RobotCollisonWithItselfChecking( collisionAngle2 )
-    test2 = RobotCollisonWithItselfChecking( safeAngle2 )
+    test1 = RobotCollisonWithItselfChecking( safeAngle1 )
+    test2 = RobotCollisonWithItselfChecking( collisionAngle1 )
 
-print(test1.checkingCollisonWithItself())
-print(test2.checkingCollisonWithItself())
+    print(test1.checkingCollisonWithItself())
+    print(test2.checkingCollisonWithItself())
+    
