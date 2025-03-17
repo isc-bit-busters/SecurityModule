@@ -7,16 +7,12 @@ from robotPositionChecking import DistanceFromGroundChecking
 from workingAreaChecking import WorkingAreaRobotChecking
 
 class GlobalRobotChecking():
-    def __init__(self, angles: list[float],interval:float = None, holdAngles = None,iscoin:ISCoin = None):
+    def __init__(self, angles: list[float],interval:float = None, iscoin:ISCoin = None):
 
         self.interval = interval
         self.running = False
-        if holdAngles is None:
-            self.holdAngles = angles
-            print("hold angles is none")
-        else:
-            self.holdAngles = holdAngles
-            print("here")
+        self.holdAngles = angles
+       
         self.angles = angles
         self._thread = None  
         self._stop_event = threading.Event()  # Event to handle stopping
