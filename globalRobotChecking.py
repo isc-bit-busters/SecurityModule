@@ -64,17 +64,15 @@ class GlobalRobotChecking():
         self.safeAreaChecking = WorkingAreaRobotChecking(0, 0, 0, 0.7, self.angles)
         areaChecking = self.safeAreaChecking.checkPointsInHalfOfSphere()
         self.checkingDistanceFromTheGround = DistanceFromGroundChecking(self.angles).checkingDistanceFromGround()
-        #if any(value is False for value in areaChecking.values()):
-        #   print("Robot is out of the working area")
-        #   self.isValid = False
+        if any(value is False for value in areaChecking.values()):
+           print("Robot is out of the working area")
+           self.isValid = False
       
-           # print("Robot is inside the working area")
 
-        #if any(value is False for value in self.checkingDistanceFromTheGround.values()):  
-        #    print("Robot is too close to the ground") 
-         #   self.isValid = False
-        #else:
-        #    print("Robot is at a safe distance from the ground")
+        if any(value is False for value in self.checkingDistanceFromTheGround.values()):  
+            print("Robot is too close to the ground") 
+            self.isValid = False
+        
      
         if  self.isValid:
             self.validPositions.append(self.angles)
