@@ -1,3 +1,6 @@
+[![codecov](https://codecov.io/gh/6figuress/SecurityModule/graph/badge.svg?token=HWDLANEU4D)](https://codecov.io/gh/6figuress/SecurityModule)
+![Test status](https://github.com/6figuress/SecurityModule/actions/workflows/main.yml/badge.svg)
+
 # SecurityModule
 
 ## Overview
