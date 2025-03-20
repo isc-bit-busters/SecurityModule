@@ -1,6 +1,6 @@
 import numpy as np
 
-from forwardKinematics import ForwardKinematic
+from .forwardKinematics import ForwardKinematic
 
 
 class RobotCollisonWithItselfChecking:

@@ -2,9 +2,10 @@ import time
 import threading
 
 from urbasic import ISCoin
-from checkAnglesVariation import checkAngleVariation
-from robotPositionChecking import DistanceFromGroundChecking
-from workingAreaChecking import WorkingAreaRobotChecking
+
+from .checkAnglesVariation import checkAngleVariation
+from .robotPositionChecking import DistanceFromGroundChecking
+from .workingAreaChecking import WorkingAreaRobotChecking
 
 class GlobalRobotChecking():
     def __init__(self, angles: list[float],interval:float = None, iscoin:ISCoin = None):

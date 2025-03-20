@@ -1,5 +1,6 @@
 import pytest
-from collisonWithItselfCheck import RobotCollisonWithItselfChecking
+
+from .collisonWithItselfCheck import RobotCollisonWithItselfChecking
 
 # Define multiple sets of angles for testing
 test_angles = [

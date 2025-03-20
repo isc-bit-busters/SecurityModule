@@ -1,11 +1,10 @@
-import time
-
-from globalRobotChecking import GlobalRobotChecking
-
-from urbasic import ISCoin
 from math import radians
-from urbasic import Joint6D
 import json
+
+from urbasic import ISCoin, Joint6D
+
+from .globalRobotChecking import GlobalRobotChecking
+
 
 # function to read a simulation json and read it to control the robot
 def readJson(path):

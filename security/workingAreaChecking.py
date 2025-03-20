@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from forwardKinematics import ForwardKinematic
+from .forwardKinematics import ForwardKinematic
 
 class WorkingAreaRobotChecking():
     def __init__(self, x0, y0, z0, r, angles:list, unitTest = False, coordinates = None):

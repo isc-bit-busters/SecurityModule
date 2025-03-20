@@ -1,6 +1,6 @@
 import numpy as np
 
-from globalRobotChecking import GlobalRobotChecking
+from .globalRobotChecking import GlobalRobotChecking
 
 
 class ValidateRobotPosition():

@@ -1,5 +1,6 @@
 import pytest
-from forwardKinematics import ForwardKinematic
+
+from .forwardKinematics import ForwardKinematic
 
 # filepath: /home/marta/Projects/SecurityModule/test_unitTestsFk.py
 

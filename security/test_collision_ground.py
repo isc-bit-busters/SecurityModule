@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
-from robotPositionChecking import DistanceFromGroundChecking
+
+from .robotPositionChecking import DistanceFromGroundChecking
 
 # filepath: /home/marta/Projects/SecurityModule/test_unitTestsCollisonWithTheGround.py
 

@@ -1,7 +1,7 @@
 
 import numpy as np
 
-from manualCheckingRobotPositon import ValidateRobotPosition
+from .manualCheckingRobotPositon import ValidateRobotPosition
 
 
 test = ValidateRobotPosition([np.array([[-1.8742882 ,  2.8890624 ,  2.16146255,  2.8037591 ,  1.5698303 ,

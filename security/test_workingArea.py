@@ -1,5 +1,6 @@
 import pytest
-from workingAreaChecking import WorkingAreaRobotChecking
+
+from .workingAreaChecking import WorkingAreaRobotChecking
 
 # filepath: /home/marta/Projects/SecurityModule/test_unitTestsWorkingArea.py
 
