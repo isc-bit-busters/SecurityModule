@@ -1,2 +1,0 @@
-2025-03-12 13:34:03,139 - URBasic_rtdeEvent - ERROR - RTDE connection error: An input parameter is already in use.
-2025-03-12 13:34:04,411 - URBasic_rtdeEvent - WARNING - wait_rtde timed out while RTDE interface not running

@@ -1,0 +1,19 @@
+[project]
+name = "security"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=2.2.4",
+    "urbasic",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "pytest-cov>=6.0.0",
+]
+
+[tool.uv.sources]
+urbasic = { git = "https://github.com/6figuress/ur3e-control.git" }
