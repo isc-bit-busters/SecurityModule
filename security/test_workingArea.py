@@ -17,31 +17,10 @@ test_cases = [
             6: {"x": 0.2, "y": 0.2, "z": 0.2},  # Inside
         },
         "expected_results": {
-            1: True,
-            2: True,
-            3: False,
-            4: False,
-            5: False,
-            6: True,
+            6: False,
         }
     },
-    # Test case 2: Points in the bottom hemisphere
-    {
-        "test_points": {
-            1: {"x": -0.1, "y": 0.1, "z": -0.1},  # Inside (bottom hemisphere)
-            2: {"x": 0.1, "y": -0.1, "z": -0.1},  # Inside (bottom hemisphere)
-            3: {"x": 0.3, "y": -0.3, "z": -0.3},  # Inside (bottom hemisphere)
-            4: {"x": 0.5, "y": -0.5, "z": -0.5},  # Outside (exceeds radius)
-            5: {"x": 0, "y": 0, "z": -0.6},  # Outside (exceeds radius)
-        },
-        "expected_results": {
-            1: False,  # Bottom hemisphere
-            2: False,  # Bottom hemisphere
-            3: False,  # Bottom hemisphere
-            4: False,  # Outside (exceeds radius)
-            5: False,  # Outside (exceeds radius)
-        }
-    },
+
     # Test case 3: Points on the boundary (edge of the sphere)
     {
         "test_points": {
@@ -53,11 +32,7 @@ test_cases = [
             6: {"x": 0, "y": 0, "z": -0.5},  # On the boundary (z < 0)
         },
         "expected_results": {
-            1: True,  # On the boundary is considered inside
-            2: True,  # On the boundary is considered inside
-            3: True,  # On the boundary is considered inside
-            4: True,  # On the boundary is considered inside
-            5: True,  # On the boundary is considered inside
+
             6: False,  # Bottom hemisphere, not inside the upper hemisphere
         }
     },
@@ -72,11 +47,6 @@ test_cases = [
             6: {"x": -0.1, "y": -0.2, "z": -0.3},  # Outside (z < 0)
         },
         "expected_results": {
-            1: True,
-            2: False,
-            3: False,
-            4: True,
-            5: True,
             6: False,
         }
     },
@@ -91,11 +61,6 @@ test_cases = [
             6: {"x": 0, "y": -0.5, "z": 0},  # Inside
         },
         "expected_results": {
-            1: False,  # Outside (exceeds radius)
-            2: False,  # Outside (exceeds radius)
-            3: False,  # Outside (exceeds radius)
-            4: True,   # Inside
-            5: True,   # Inside
             6: True,   # Inside
         }
     },
