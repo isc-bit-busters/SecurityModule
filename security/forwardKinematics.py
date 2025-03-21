@@ -75,11 +75,3 @@ class ForwardKinematic():
         return finalCoordinates
 
 
-if __name__ == "__main__":
-    test = ForwardKinematic([ 5.410520681,
-            3.316125579,
-            1.029744259,
-            3.473205211,
-            2.094395102,
-            1.570796327,])
-    print(test.getCoordinates())
