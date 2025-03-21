@@ -1,18 +1,21 @@
 import numpy as np
 
 from .forwardKinematics import ForwardKinematic
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
+import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 
 class RobotCollisonWithItselfChecking:
     def __init__(self, angles: list[float]):
         self.angles = angles
         self.diameters = {
-            1: 0.0128,  # to be defined
-            2: 0.009,
-            3: 0.009,
-            4: 0.0065,
-            5: 0.0065,
-            6: 0.0065,
+            1: 0.128,  # to be defined
+            2: 0.09,
+            3: 0.09,
+            4: 0.065,
+            5: 0.065,
+            6: 0.065,
         }
         self.safeDistances = {
             1: {2: 0.07, 3: 0.05, 4: 0.05, 5: 0.08, 6: 0.3},
@@ -24,21 +27,32 @@ class RobotCollisonWithItselfChecking:
         self.cylinders = {}
 
         self.coordinates = ForwardKinematic(angles).getCoordinates()
+        self._fillCylindersDict()
+
 
     def _createVectorCylinder(self, p1, q1):
         """Creation of a vector from two points
         to define the direction of the cylinder"""
+        print("vector d ", np.array([(q1["x"] - p1["x"]), (q1["y"] - p1["y"]), (q1["z"] - p1["z"])]))
+        print("distance: ", np.linalg.norm(np.array([(q1["x"] - p1["x"]), (q1["y"] - p1["y"]), (q1["z"] - p1["z"])])))
         return np.array([(q1["x"] - p1["x"]), (q1["y"] - p1["y"]), (q1["z"] - p1["z"])])
-
     def _createCylinder(self, key, p1, q1):
         """Create a cylinder with the given coordinates and radius"""
 
         if key == 6:
+            # Extend the cylinder with key 6 by scaling its direction vector
+            extension_factor = 1.5  # Adjust this factor to control the length
+            direction_vector = self._createVectorCylinder(p1, q1)
+            extended_q1 = {
+                "x": q1["x"] + extension_factor * direction_vector[0],
+                "y": q1["y"] + extension_factor * direction_vector[1],
+                "z": q1["z"] + extension_factor * direction_vector[2],
+            }
             self.cylinders[key] = {
                 "p": p1,
                 "q": q1,
                 "r": self.diameters[key] / 2,
-                "d": self._createVectorCylinder(p1, q1),
+                "d": direction_vector,
             }
         else:
             self.cylinders[key] = {
@@ -131,7 +145,6 @@ class RobotCollisonWithItselfChecking:
         return dAxes - (r1 + r2)
 
     def checkingCollisonWithItself(self):
-        self._fillCylindersDict()
         cylinderDistances = {}
 
         cylinder_keys = list(self.cylinders.keys())  # Extract just the keys
@@ -151,6 +164,57 @@ class RobotCollisonWithItselfChecking:
                         cylinderDistances[(key1, key2)] = True
         return cylinderDistances
 
+    def plotCylinders(self):
+        """Plot the cylinders in 3D space interactively using plotly."""
+        
+        fig = go.Figure()
+
+        for key, cylinder in self.cylinders.items():
+            p = np.array([cylinder["p"]["x"], cylinder["p"]["y"], cylinder["p"]["z"]])
+            q = np.array([cylinder["q"]["x"], cylinder["q"]["y"], cylinder["q"]["z"]])
+            r = cylinder["r"]
+
+            # Plot the cylinder axis as a line
+            fig.add_trace(go.Scatter3d(
+                x=[p[0], q[0]],
+                y=[p[1], q[1]],
+                z=[p[2], q[2]],
+                mode='lines',
+                line=dict(width=r*1000),
+                name=f"Cylinder {key}"
+            ))
+
+            # Generate the circular cross-sections along the cylinder's height
+            v = np.linspace(0, 2 * np.pi, 100)
+            x_circle = r * np.cos(v)
+            y_circle = r * np.sin(v)
+
+            # Create the cylinder by plotting multiple cross-sections
+            for t in np.linspace(0, 1, 10):
+                point = p + t * (q - p)
+                fig.add_trace(go.Scatter3d(
+                    x=x_circle + point[0],
+                    y=y_circle + point[1],
+                    z=np.full_like(x_circle, point[2]),
+                    mode='lines',
+                    line=dict(color='rgba(0,0,255,0.3)', width=2),
+                    showlegend=False
+                ))
+
+        # Labels and visualization settings
+        fig.update_layout(
+            scene=dict(
+                xaxis_title="X-axis",
+                yaxis_title="Y-axis",
+                zaxis_title="Z-axis"
+            ),
+            title="3D Cylinder Visualization",
+        )
+        
+        fig.show()
+
+
+
 
 # Test angles
 collisionAngle1 = [0.9509, -1.6623, 2.3, -0.5976, 0.5, 0.0] # ok
@@ -158,7 +222,7 @@ safeAngle1 = [0.9509, -1.6623, 0.6353, -0.5976, -1.5722, 0.0] # ok
 safeAngle2 = [0.9509, -1.6623, 0.6353, -0.5976, -1.5722, 0.0]
 collisionAngle2 = [0.9509, -1.6623, -3.0, 0.5976, 0.5722, 0.0]
 collisionAngle3 = [0.00001, -3.13, 3.13, 0.000001, 0.000001, 0.000001]
-collisionAngle4 = [0.00001, 0.001, -0.2, 0.000001, 0.000001, 0.000001]
+collisionAngle4 = [0.00001, 0.000001, 0.000001, 0.000001, 0.000001, 0.000001]
 collisionAngle5 = [0.0001, -3.14, 2.7, 0.0001, 3.14, 0.0001]
 collisionAngle6 = [0.00001, -3.14, 3.14, 0.00001, 3.14, 0.000001]
 collisionAngle7 = [0.9509, -1.6623, 0.6353, 0.5, -1.5722, 0.0]
@@ -166,9 +230,8 @@ noColl = [0.9019, -1.1795, 1.9326, -2.3253, -1.5697, -0.6689]
 safeAngle3 = [-0.7493, -1.0, 1.0478, -1.0997, -0.2, -2.3201]
 safeAngle4 = [0.7493, -1.5177, 1.0478, -1.0997, -1.5695, -2.3201]
 if __name__ == "__main__":
-    test1 = RobotCollisonWithItselfChecking(safeAngle1)
-
-    test2 = RobotCollisonWithItselfChecking(collisionAngle4)
+    test1 = RobotCollisonWithItselfChecking(collisionAngle7)
 
     print(test1.checkingCollisonWithItself())
-    print(test2.checkingCollisonWithItself())
+    test1.plotCylinders()
+   # test2.plotCylinders()
