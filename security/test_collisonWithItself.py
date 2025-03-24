@@ -5,41 +5,128 @@ from .collisonWithItselfCheck import RobotCollisonWithItselfChecking
 # Define multiple sets of angles for testing
 test_angles = [
     {
-        "angles": [
-            0.9509, -1.6623, 1.8353, -0.5976, -1.5722, 0.0
-        ],
-        "expected": False  # Expected collision result
+        "angles": [0.9509, -1.6623, 1.8353, -0.5976, -1.5722, 0.0],
+        "expected": {
+            (1, 3): True,
+            (1, 4): True,
+            (1, 5): False,
+            (2, 4): True,
+            (2, 5): True,
+            (3, 5): True,
+        },
     },
     {
-        "angles": [
-            0.9509, -1.6623, 0.6353, -0.5976, -1.5722, 0.0
-        ],
-        "expected": True  # Expected safe result
+        "angles": [0.9509, -1.6623, 0.6353, -0.5976, -1.5722, 0.0],
+        "expected": {
+            (1, 3): True,
+            (1, 4): True,
+            (1, 5): True,
+            (2, 4): True,
+            (2, 5): True,
+            (3, 5): True,
+        },  # Expected safe result
     },
     {
-        "angles": [
-            0.9509, -1.6623, 2.6353, 0.5976, 1.5722, 0.0
-        ],
-        "expected": False  # Expected collision result
+        "angles": [0.9509, -1.6623, 2.6353, 0.5976, 1.5722, 0.0],
+        "expected": {
+            (1, 3): False,
+            (1, 4): True,
+            (1, 5): True,
+            (2, 4): True,
+            (2, 5): True,
+            (3, 5): True,
+        },
     },
     {
-        "angles": [
-            0.9509, -1.6623, 0.6353, -0.5976, -1.5722, 0.0
-        ],
-        "expected": True  # Expected safe result
+        "angles": [0.9509, -1.6623, 0.6353, -0.5976, -1.5722, 0.0],
+        "expected": {
+            (1, 3): True,
+            (1, 4): True,
+            (1, 5): True,
+            (2, 4): True,
+            (2, 5): True,
+            (3, 5): True,
+        },
     },
     {
-        "angles": [
-                0.0,
-                -3.14,
-                3.14,
-                0.0,
-                0.0,
-                0.0
-            ],
-        "expected": False  # Expected safe result
-    }
+        "angles": [0.0, -3.14, 3.14, 0.0, 0.0, 0.0],
+        "expected": {
+            (1, 3): False,
+            (1, 4): True,
+            (1, 5): True,
+            (2, 4): True,
+            (2, 5): True,
+            (3, 5): True,
+        },
+    },
+    {
+        "angles": [0.0, -3.14, 2.7, 0.0, 3.14, 0.0],
+        "expected": {
+            (1, 3): False,
+            (1, 4): True,
+            (1, 5): False,
+            (2, 4): True,
+            (2, 5): False,
+            (3, 5): True,
+        },
+    },
+    {
+        "angles": [0.9509, -1.6623, 0.6353, 0.5, -1.5722, 0.0],
+        "expected": {
+            (1, 3): True,
+            (1, 4): True,
+            (1, 5): False,
+            (2, 4): True,
+            (2, 5): True,
+            (3, 5): True,
+        },
+    },
+    {
+        "angles": [0.00001, 0.000001, 0.00001, 0.00001, 0.00001, 0.000001],
+        "expected": {
+            (1, 3): True,
+            (1, 4): True,
+            (1, 5): True,
+            (2, 4): True,
+            (2, 5): True,
+            (3, 5): True,
+        },
+    },
+    {
+        "angles": [0.0, -3.14, 3.14, 0.0, 3.14, 0.0],
+        "expected": {
+            (1, 3): False,
+            (1, 4): True,
+            (1, 5): False,
+            (2, 4): True,
+            (2, 5): False,
+            (3, 5): True,
+        },
+    },
+    {
+        "angles": [-0.7493, -1.0, 1.0478, -1.0997, -0.2, -2.3201],
+        "expected": {
+            (1, 3): True,
+            (1, 4): True,
+            (1, 5): True,
+            (2, 4): True,
+            (2, 5): True,
+            (3, 5): True,
+        },
+    },
+    {
+        "angles": [0.9019, -1.1795, 1.9326, -2.3253, -1.5697, -0.6689],
+        "expected": {
+            (1, 3): True,
+            (1, 4): True,
+            (1, 5): True,
+            (2, 4): True,
+            (2, 5): True,
+            (3, 5): True,
+        },
+    },
 ]
+
 
 @pytest.mark.parametrize("test_case", test_angles)
 def test_checkingCollisonWithItself(test_case):
@@ -48,14 +135,10 @@ def test_checkingCollisonWithItself(test_case):
     print(angles)
     robot = RobotCollisonWithItselfChecking(angles)
     result = robot.checkingCollisonWithItself()
-    print("res",result)
-    # Check if any collision is detected
-    if False in result.values() :
-        collision_detected = False 
-    else: 
-        collision_detected = True
-    print("col",collision_detected)
-    assert collision_detected == expected
+    print("res", result)
+
+    assert result == expected
+
 
 if __name__ == "__main__":
     pytest.main()
