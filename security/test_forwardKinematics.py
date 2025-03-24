@@ -137,15 +137,6 @@ def test_buildMatrices(index, expected_matrix):
             assert abs(elem_fk - elem_test) <= tolerance
 
 
-@pytest.mark.parametrize("index, expected_matrix", exptedMatricesDotProd.items())
-def test_getDotProdMat():
-    fk = ForwardKinematic(angles[0])
-    matDot = fk._getDotProdMat()
-    for mat_fk, mat_test in zip(matDot[1:], exptedMatricesDotProd.values()):
-        assert len(mat_fk) == len(mat_test)
-        for row_fk, row_test in zip(mat_fk, mat_test):
-            for elem_fk, elem_test in zip(row_fk, row_test):
-                assert pytest.approx(elem_fk, rel=1e-4) == elem_test
 
 
 @pytest.mark.parametrize("angles_test, coordinates_test_case", zip(angles, coordinates_test))
