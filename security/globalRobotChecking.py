@@ -6,7 +6,7 @@ from urbasic import ISCoin
 from .checkAnglesVariation import checkAngleVariation
 from .robotPositionChecking import DistanceFromGroundChecking
 from .workingAreaChecking import WorkingAreaRobotChecking
-
+from .collisonWithItselfCheck import RobotCollisonWithItselfChecking
 class GlobalRobotChecking():
     def __init__(self, angles: list[float],interval:float = None, iscoin:ISCoin = None):
 
@@ -65,6 +65,7 @@ class GlobalRobotChecking():
         self.safeAreaChecking = WorkingAreaRobotChecking(0, 0, 0, 0.7, self.angles)
         areaChecking = self.safeAreaChecking.checkPointsInHalfOfSphere()
         self.checkingDistanceFromTheGround = DistanceFromGroundChecking(self.angles).checkingDistanceFromGround()
+        self.checkDistFromItself = RobotCollisonWithItselfChecking(self.angles).checkingCollisonWithItself()
         if any(value is False for value in areaChecking.values()):
            print("Robot is out of the working area")
            self.isValid = False
@@ -72,6 +73,10 @@ class GlobalRobotChecking():
 
         if any(value is False for value in self.checkingDistanceFromTheGround.values()):  
             print("Robot is too close to the ground") 
+            self.isValid = False
+        
+        if any(value is False for value in self.checkDistFromItself.values()):  
+            print("Robot is too close to itself") 
             self.isValid = False
         
      

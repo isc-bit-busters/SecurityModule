@@ -20,8 +20,13 @@ SecurityModule is a project aimed at ensuring the safety and collision detection
 - **Unittest** : To test the functionality listed above
 ## Installation
 
-To install the SecurityModule, 
+To install the SecurityModule
 
+uv install git+https://github.com/6figuress/SecurityModule.git
+
+To update changes:
+
+uv sync -U
 
 ## Usage
 

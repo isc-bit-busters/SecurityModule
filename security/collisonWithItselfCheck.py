@@ -1,11 +1,9 @@
 import numpy as np
 
 from .forwardKinematics import ForwardKinematic
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
-import matplotlib.pyplot as plt
 
 
 class RobotCollisonWithItselfChecking:
