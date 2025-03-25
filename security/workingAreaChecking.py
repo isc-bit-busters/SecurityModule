@@ -12,7 +12,7 @@ class WorkingAreaRobotChecking():
         self.r = r
         
         self.coordinates = ForwardKinematic(angles).getCoordinates()
-        print(self.coordinates)
+
         if unitTest:
             self.coordinates = coordinates
 
@@ -48,7 +48,6 @@ class WorkingAreaRobotChecking():
         if randomPoint[1] >0:
             return False
         # Check if the point is within the sphere's radius
-        print((randomPoint[0] - self.x0)**2 + (randomPoint[1] - self.y0)**2 + (randomPoint[2] - self.z0)**2 )
         return (randomPoint[0] - self.x0)**2 + (randomPoint[1] - self.y0)**2 + (randomPoint[2] - self.z0)**2 <= self.r**2
 
     def draw(self):

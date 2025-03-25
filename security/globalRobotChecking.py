@@ -2,6 +2,7 @@ import time
 import threading
 
 from urbasic import ISCoin
+import numpy as np
 
 from .checkAnglesVariation import checkAngleVariation
 from .robotPositionChecking import DistanceFromGroundChecking
@@ -47,34 +48,33 @@ class GlobalRobotChecking():
     # test effectued only for the real time checking
     def _beahviourForRealTime(self):
         highVariations = []
-        print(self.holdAngles)
 
         highVariations, self.holdAngles = checkAngleVariation(self.angles, self.holdAngles, self.interval).checkVariation()
         self.holdAngles = self.angles
         if highVariations:
             print("High variations in the angles of the joints: ", highVariations)
             self.isValid = False 
-        else: 
-            print("The angles of the joints are stable")
+   
         
     def checkNextBehaviour(self):
 
         if self.interval is not None:
-            self._beahviourForRealTime()
+             self._beahviourForRealTime()
 
-        self.safeAreaChecking = WorkingAreaRobotChecking(0, 0, 0, 0.7, self.angles)
+        self.safeAreaChecking = WorkingAreaRobotChecking(0, 0, 0, 0.62, self.angles)
         areaChecking = self.safeAreaChecking.checkPointsInHalfOfSphere()
-        self.checkingDistanceFromTheGround = DistanceFromGroundChecking(self.angles).checkingDistanceFromGround()
+        self.checkingDistanceFromTheGround = DistanceFromGroundChecking(self.angles).checkDistanceFromTheGround()
         self.checkDistFromItself = RobotCollisonWithItselfChecking(self.angles).checkingCollisonWithItself()
-        if any(value is False for value in areaChecking.values()):
+        if areaChecking[6] != np.True_:
            print("Robot is out of the working area")
            self.isValid = False
       
 
-        if any(value is False for value in self.checkingDistanceFromTheGround.values()):  
+        if any(value is np.False_ for value in self.checkingDistanceFromTheGround.values()): 
             print("Robot is too close to the ground") 
             self.isValid = False
-        
+
+
         if any(value is False for value in self.checkDistFromItself.values()):  
             print("Robot is too close to itself") 
             self.isValid = False

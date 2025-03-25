@@ -2,8 +2,11 @@ import numpy as np
 
 from .forwardKinematics import ForwardKinematic
 
-import matplotlib.pyplot as plt
 import plotly.graph_objects as go
+
+from urbasic import ISCoin, Joint6D
+
+
 
 
 class RobotCollisonWithItselfChecking:
@@ -18,9 +21,9 @@ class RobotCollisonWithItselfChecking:
             6: 0.085,
         }
         self.safeDistances = {
-            1: {2: 0.13, 3: 0.13, 4: 0.07, 5: 0.10, 6: 0.13},
-            2: {3: 0.05, 4: 0.07, 5: 0.04, 6: 0.12},
-            3: {4: 0.13, 5: 0.03, 6: 0.13},
+            1: {2: 0.13, 3: 0.08, 4: 0.15, 5: 0.17, 6: 0.13}, # real values (1,5) 0.1
+            2: {3: 0.05, 4: 0.03, 5: 0.04, 6: 0.12},
+            3: {4: 0.13, 5: 0.04, 6: 0.13},# real 2,4 0.3
             4: {5: 0.13, 6: 0.13},
             5: {6: 0.13},
         }
@@ -44,7 +47,6 @@ class RobotCollisonWithItselfChecking:
             # Extend the cylinder with key 6 by scaling its direction vector
             extension_factor = 1  # Adjust this factor to control the length
             direction_vector = self._createVectorCylinder(p1, q1)
-            print("here")
             extended_q1 = {
                 "x": q1["x"] + extension_factor * direction_vector[0],
                 "y": q1["y"] + extension_factor * direction_vector[1],
@@ -129,8 +131,8 @@ class RobotCollisonWithItselfChecking:
         r1 = self.cylinders[cylinderKey1]["r"] / 2
         r2 = self.cylinders[cylinderKey2]["r"] / 2
 
-        print(f"Radii: Cylinder {cylinderKey1} = {r1}, Cylinder {cylinderKey2} = {r2}")
-        print(f"Distance between axes: {dAxes} , res = {dAxes - (r1 + r2)}")
+        # print(f"Radii: Cylinder {cylinderKey1} = {r1}, Cylinder {cylinderKey2} = {r2}")
+        # print(f"Distance between axes: {dAxes} , res = {dAxes - (r1 + r2)}")
 
         return dAxes - (r1 + r2)
 
@@ -146,7 +148,7 @@ class RobotCollisonWithItselfChecking:
 
                 if key2 in self.safeDistances.get(key1, {}):  # Avoid KeyError
                     distance = self._computeDistanceBetweenTwoCylinders(key1, key2)
-                    print("distance", key1, key2, distance)
+                    #print("distance", key1, key2, distance)
 
                     if distance <= self.safeDistances[key1][key2]:
                         cylinderDistances[(key1, key2)] = False
@@ -231,4 +233,12 @@ class RobotCollisonWithItselfChecking:
 
         fig.show()
 
-
+collison = [0.0, -2.14, 2.14, 0.4, 3.14, 0.0]
+nocoll = [0.9509, -1.6623, 0.6353, -0.5976, -1.5722, 0.0]
+if __name__ == "__main__":
+   
+    iscoin = ISCoin(host="10.30.5.159", opened_gripper_size_mm=40)
+    angles= list(iscoin.robot_control.get_actual_joint_positions())
+    print(angles)
+    test = RobotCollisonWithItselfChecking(angles)
+    test.plotCylinders()
