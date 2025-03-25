@@ -100,3 +100,11 @@ To compute the **distance between two joints**, model them as **cylinders**.
 
 Compute distance with 2 joint interpreted with cylinders --> https://www.researchgate.net/figure/Distance-between-two-cylinders_fig1_282996677 --> similar to the distance between 2 point but this approach simplifies things too much (robotic arm is in 3d not 2d) so we have to know diameters of each part of the robotic arm to compute the distance between 2 joint. 
 there are methods in the control library such as get_tcp_force which checks that the robot is not exerting too much force on itself. Useful if the manual implementation takes too long but not advisable as a first choice because we would like to stop the robot before they make contact, not when they are already in contact (only then does the tcp force come into action).
+
+## 9. Interpolation btw two trajectories
+
+this part of interpolation is necessary to check that the final trajectory of the robot has no problems at the safety level. For the moment the interpolation will be done only on the final trajectory if there is time it will be applied to all possible trajectories. This step is necessary because the robot movej is blocking so we would not be able to stop the robot in time if it does something dangerous
+
+DIfferent type of interpolation: 
+- Linear interp. --> I start with this one for algorithmic simplicity with the risk that it is not accurate enough 
+- Polynomial interp.

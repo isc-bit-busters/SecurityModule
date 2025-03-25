@@ -5,52 +5,77 @@ from .forwardKinematics import ForwardKinematic
 
 class WorkingAreaRobotChecking():
     def __init__(self, x0, y0, z0, r, angles:list, unitTest = False, coordinates = None):
+        """
+        Initializes the WorkingAreaRobotChecking class.
 
+        Parameters:
+        - x0, y0, z0: Coordinates of the sphere's center.
+        - r: Radius of the sphere.
+        - angles: List of joint angles for the robot.
+        - unitTest: Boolean flag to enable unit testing.
+        - coordinates: Predefined coordinates for unit testing.
+        """
         self.x0 = x0
         self.y0 = y0
         self.z0 = z0
         self.r = r
         
+        # Get robot joint coordinates using forward kinematics
         self.coordinates = ForwardKinematic(angles).getCoordinates()
 
+        # Override coordinates if unit testing is enabled
         if unitTest:
             self.coordinates = coordinates
 
+        # Generate points on the sphere's surface
         num_points = 50
         theta = np.linspace(0, 2 * np.pi, num_points)  # Azimuthal angle
-        phi = np.linspace(0, np.pi, num_points)      # Polar angle
+        phi = np.linspace(0, np.pi, num_points)       # Polar angle
 
+        # Create a meshgrid for spherical coordinates
         theta, phi = np.meshgrid(theta, phi)
 
+        # Convert spherical coordinates to Cartesian coordinates
         x = self.x0 + self.r * np.cos(theta) * np.sin(phi)
         y = self.y0 + self.r * np.sin(theta) * np.sin(phi)
         z = self.z0 + self.r * np.cos(phi)
 
-        # Flatten the arrays
+        # Flatten the arrays for easier processing
         x_flat = x.flatten()
         y_flat = y.flatten()
         z_flat = z.flatten()
 
-        # Filter points where z > 0 (for the top hemisphere)
+        # Combine the coordinates into a single array
         points = np.vstack((x_flat, y_flat, z_flat)).T
 
-        # Only select points where z < 0
-
+        # Filter points to only include those in the lower hemisphere (z < 0)
         self.points_filtered = points[points[:, 2] < 0]
-        self.points_filtered = points[points[:, 1] < 0]
-
-
+        # Further filter points to only include those in the negative y-axis (y < 0)
+        self.points_filtered = self.points_filtered[self.points_filtered[:, 1] < 0]
 
     def _isPointInHalfOfSphere(self, randomPoint):
-        # Check if the point is in the upper hemisphere
+        """
+        Checks if a given point is within the lower hemisphere and the negative y-axis.
+
+        Parameters:
+        - randomPoint: A list containing the x, y, z coordinates of the point.
+
+        Returns:
+        - True if the point is within the specified region, False otherwise.
+        """
+        # Check if the point is in the lower hemisphere (z < 0)
         if randomPoint[2] < 0:
             return False
-        if randomPoint[1] >0:
+        # Check if the point is in the negative y-axis (y > 0)
+        if randomPoint[1] > 0:
             return False
         # Check if the point is within the sphere's radius
         return (randomPoint[0] - self.x0)**2 + (randomPoint[1] - self.y0)**2 + (randomPoint[2] - self.z0)**2 <= self.r**2
 
     def draw(self):
+        """
+        Visualizes the working area and the robot's joint positions in 3D space.
+        """
         fig = plt.figure(figsize=(6, 6))
         ax = fig.add_subplot(111, projection='3d')
 
@@ -64,82 +89,40 @@ class WorkingAreaRobotChecking():
         y_vals = np.array([point['y'] for point in self.coordinates.values()])
         z_vals = np.array([point['z'] for point in self.coordinates.values()])
 
-        # Plot hemisphere points
+        # Plot the filtered hemisphere points
         ax.scatter(x_filtered, y_filtered, z_filtered, alpha=0.5, label="Working Area")
 
-        # Plot robot joint positions with color and size adjustments
+        # Plot the robot joint positions
         ax.scatter(x_vals, y_vals, z_vals, c='red', s=10, label="Robot Joints")
 
-        for i in range(len(x_vals) - 1):  # Loop through points
+        # Connect the robot joints with lines
+        for i in range(len(x_vals) - 1):  # Loop through consecutive points
             ax.plot([x_vals[i], x_vals[i+1]],  # X-coordinates
                     [y_vals[i], y_vals[i+1]],  # Y-coordinates
                     [z_vals[i], z_vals[i+1]],  # Z-coordinates
                     c='blue', linewidth=2)  # Blue lines
 
-
-        # Labels and legend
+        # Set axis labels and legend
         ax.set_xlabel("X-axis")
         ax.set_ylabel("Y-axis")
         ax.set_zlabel("Z-axis")
-        ax.set_zlim((0,1))
+        ax.set_zlim((0, 1))  # Limit the Z-axis range
         plt.show()
 
-
     def checkPointsInHalfOfSphere(self):
+        """
+        Checks if the latest robot joint position is within the specified region.
+
+        Returns:
+        - A dictionary with the latest joint key and a boolean indicating if it's in the region.
+        - None if the coordinates dictionary is empty.
+        """
         if not self.coordinates:
-            return None  # Return None if the dictionary is empty
+            return None  # Return None if no coordinates are available
         
+        # Get the latest joint key and its corresponding point
         latest_key = next(reversed(self.coordinates))  # Get the last added key
         latest_point = self.coordinates[latest_key]   # Get the corresponding point
         
-        # Check if it's inside the upper hemisphere
+        # Check if the point is within the specified region
         return {latest_key: self._isPointInHalfOfSphere([latest_point['x'], latest_point['y'], latest_point['z']])}
-
-
-
-
-if __name__ == "__main__": 
-    pos1 = [0.35230425000190735,-0.7322418850711365,0.5806735197650355,-1.0719731015018006,4.915554523468018,0.31385645270347595]
-    pos2 = [2.711972236633301,-1.102702186708786,0.9782894293414515,-1.2463486355594178,4.384324073791504,-0.8515551725970667]
-
-    inside_pos1 = [0.9481282830238342, -1.3380088073066254, 0.7121437231646937, -1.0540800851634522, -1.5575674215899866, -0.5976246039019983]
-    inside_pos2 = [0.6118811368942261, -1.0608138006976624, 0.6223252455340784, -1.2109331053546448, -1.4435485045062464, -1.4143388907061976]
-
-    out_pos1 = [2.807316541671753, -1.4116303038648148, 0.6609633604632776, -0.6375070375255127, -1.1185200850116175, -1.4017718474017542]
-    out_pos2 = [2.807316541671753, -1.4116303038648148, 0.6609633604632776, -0.6375070375255127, -1.1185200850116175, -1.4017718474017542]
-
-    limit_pos1 = [2.063770055770874, -0.9286156457713624, 0.6224730650531214, -1.5671449464610596, -1.461837116871969, -0.4172404448138636]
-
-    home1 = [   0.9509,
-                -1.6623,
-                0.6353,
-                -0.5976,
-                -1.5722,
-                0.0]
-    inside= [
-                1.1193,
-                -1.5922,
-                1.1245,
-                -1.1035,
-                -1.572,
-                -0.4507
-            ]
-    outside = [
-                -0.7493,
-                -1.5177,
-                1.0478,
-                -1.0997,
-                -1.5695,
-                -2.3201
-            ]
-    home2= [
-                0.9509,
-                -1.6623,
-                0.6353,
-                -0.5976,
-                -1.5722,
-                0.0
-            ]
-    test = WorkingAreaRobotChecking(0, 0, 0, 1, outside, False ) # Inside)
-    print(test.checkPointsInHalfOfSphere()) 
-    test.draw()
