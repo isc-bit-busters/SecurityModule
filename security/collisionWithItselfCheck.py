@@ -9,7 +9,7 @@ from urbasic import ISCoin, Joint6D
 
 
 
-class RobotCollisonWithItselfChecking:
+class RobotCollisionWithItselfChecking:
     def __init__(self, angles: list[float]):
         self.angles = angles
         self.diameters = {
@@ -30,6 +30,7 @@ class RobotCollisonWithItselfChecking:
         self.cylinders = {}
 
         self.coordinates = ForwardKinematic(angles).getCoordinates()
+        self.safeDistancesFromTheGround = 0.1 # safe distance from the ground
         self._fillCylindersDict()
 
     def _createVectorCylinder(self, p1, q1):
@@ -45,7 +46,7 @@ class RobotCollisonWithItselfChecking:
 
         if key == 5:
             # Extend the cylinder with key 6 by scaling its direction vector
-            extension_factor = 1  # Adjust this factor to control the length
+            extension_factor = 1  
             direction_vector = self._createVectorCylinder(p1, q1)
             extended_q1 = {
                 "x": q1["x"] + extension_factor * direction_vector[0],
@@ -136,7 +137,7 @@ class RobotCollisonWithItselfChecking:
 
         return dAxes - (r1 + r2)
 
-    def checkingCollisonWithItself(self):
+    def checkingCollisionWithItself(self):
         cylinderDistances = {}
 
         cylinder_keys = list(self.cylinders.keys())  # Extract just the keys
@@ -148,13 +149,20 @@ class RobotCollisonWithItselfChecking:
 
                 if key2 in self.safeDistances.get(key1, {}):  # Avoid KeyError
                     distance = self._computeDistanceBetweenTwoCylinders(key1, key2)
-                    #print("distance", key1, key2, distance)
 
                     if distance <= self.safeDistances[key1][key2]:
                         cylinderDistances[(key1, key2)] = False
                     else:
                         cylinderDistances[(key1, key2)] = True
         return cylinderDistances
+    
+    def checkingCollisionWithGround(self):
+        result = {}
+        for joint_index in range(1, 6):  # Assuming there are 6 joints
+            coord = self.cylinders.get(joint_index)
+            print(coord["q"])
+            result[joint_index] = coord["q"]["z"] - self.safeDistancesFromTheGround >= 0.0
+        return result 
 
     def plotCylinders(self):
         """Plot the cylinders in 3D space interactively using plotly, including distances between cylinders."""
@@ -235,10 +243,21 @@ class RobotCollisonWithItselfChecking:
 
 collison = [0.0, -2.14, 2.14, 0.4, 3.14, 0.0]
 nocoll = [0.9509, -1.6623, 0.6353, -0.5976, -1.5722, 0.0]
+collGround = [ 0.0, -3.14, 3.14, 0.0, 0.0, 0.0]
+test = [
+            3.141,  # Joint 1 (π)
+            2.094,  # Joint 2 (π/3)
+            0.785,  # Joint 3 (π/4)
+            4.712,  # Joint 4 (3π/2)
+            6.283,  # Joint 5 (2π)
+            9.425,  # Joint 6 (3π)]
+        ]
 if __name__ == "__main__":
    
-    iscoin = ISCoin(host="10.30.5.159", opened_gripper_size_mm=40)
-    angles= list(iscoin.robot_control.get_actual_joint_positions())
-    print(angles)
-    test = RobotCollisonWithItselfChecking(angles)
+    # iscoin = ISCoin(host="10.30.5.159", opened_gripper_size_mm=40)
+    # angles= list(iscoin.robot_control.get_actual_joint_positions())
+    # print(angles)
+    test = RobotCollisionWithItselfChecking(collGround)
+    print(test.checkingCollisionWithItself())
+    print(test.checkingCollisionWithGround())
     test.plotCylinders()

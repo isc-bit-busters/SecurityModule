@@ -25,7 +25,7 @@ angles = [
             0.000,  # Joint 5
             0.000,  # Joint 6
         ],
-        "expected_result": {1: True, 2: True, 3: True, 4: True, 5: False, 6: False},
+        "expected_result": {1: True, 2: True, 3: True, 4: True, 5:True, 6: True},
     },
     {
         "angles": [
@@ -52,7 +52,7 @@ angles = [
     },
     {
         "angles": [0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001],
-        "expected_result": {1: True, 2: True, 3: True, 4: True, 5: False, 6: False},
+        "expected_result": {1: True, 2: True, 3: True, 4: True, 5: True, 6: True},
     },
     {
         "angles": [

@@ -1,4 +1,3 @@
-import time
 import threading
 
 from urbasic import ISCoin
@@ -7,7 +6,7 @@ import numpy as np
 from .checkAnglesVariation import checkAngleVariation
 from .robotPositionChecking import DistanceFromGroundChecking
 from .workingAreaChecking import WorkingAreaRobotChecking
-from .collisonWithItselfCheck import RobotCollisonWithItselfChecking
+from .collisionWithItselfCheck import RobotCollisionWithItselfChecking
 class GlobalRobotChecking():
     def __init__(self, angles: list[float],interval:float = None, iscoin:ISCoin = None):
 
@@ -63,8 +62,9 @@ class GlobalRobotChecking():
 
         self.safeAreaChecking = WorkingAreaRobotChecking(0, 0, 0, 0.62, self.angles)
         areaChecking = self.safeAreaChecking.checkPointsInHalfOfSphere()
-        self.checkingDistanceFromTheGround = DistanceFromGroundChecking(self.angles).checkDistanceFromTheGround()
-        self.checkDistFromItself = RobotCollisonWithItselfChecking(self.angles).checkingCollisonWithItself()
+        #self.checkingDistanceFromTheGround = DistanceFromGroundChecking(self.angles).checkDistanceFromTheGround()
+        self.ccheckingDistanceFromTheGround = RobotCollisionWithItselfChecking(self.angles).checkingCollisionWithTheGround()
+        self.checkDistFromItself = RobotCollisionWithItselfChecking(self.angles).checkingCollisionWithItself()
         if areaChecking[6] != np.True_:
            print("Robot is out of the working area")
            self.isValid = False
