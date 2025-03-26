@@ -6,8 +6,8 @@ from .forwardKinematics import ForwardKinematic
 
 class Interpolation():
     def __init__(self):
-        self.anglesDistanceVariation  = 0.0001  # Threshold for skipping interpolation
-        self.t = 0.00001 
+        self.anglesDistanceVariation  = 0.1  # Threshold for skipping interpolation
+        self.t = 1 
 
     def _getLinearInterpolation(self, theta1, theta2, t):
         """Performs linear interpolation between two angles without wrapping."""
@@ -53,6 +53,13 @@ class Interpolation():
         ]
 
         return interpolated_trajectory
+    
+    def  getAllInterpolatedAngles(self, angles: list[list[float]]):
+        """Interpolates between all sets of angles in the list."""
+        interpolated_angles = []
+        for i in range(len(angles) - 1):
+            interpolated_angles.append(self.getInterpolatedTrajectory(angles[i], angles[i + 1]))
+        return interpolated_angles
     def drawTrajectory(self, trajectory):
         """Draws a trajectory of joint angles."""
         # Plot angles variation
@@ -87,11 +94,10 @@ class Interpolation():
 
 
 
-
 if __name__ == "__main__":
     angles = [
         [0.9509, -1.6623, 0.6353, -0.5976, -1.5722, 0.0],  # First set of angles
-        [ 0.0, -1.0, 2.0, 0.0, 0.0, 0.0],  # Second set of angles
+        [0.9509, -1.6623, 1.6353, -0.5976, -1.5722, 0.0],  # Second set of angles
     ]
 
     interpolation = Interpolation()

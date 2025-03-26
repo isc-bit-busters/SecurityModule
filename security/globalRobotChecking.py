@@ -80,13 +80,13 @@ class GlobalRobotChecking():
         # Perform real-time behavior checks if an interval is specified
         if self.interval is not None:
             self._beahviourForRealTime()
-
+        print(self.an)
         # Check if the robot is within the working area
         self.safeAreaChecking = WorkingAreaRobotChecking(0, 0, 0, 0.62, self.angles)
         areaChecking = self.safeAreaChecking.checkPointsInHalfOfSphere()
 
         # Check if the robot is too close to the ground
-        self.checkingDistanceFromTheGround = RobotCollisionWithItselfChecking(self.angles).checkingCollisionWithTheGround()
+        self.checkingDistanceFromTheGround = RobotCollisionWithItselfChecking(self.angles).checkingCollisionWithGround()
 
         # Check if the robot is colliding with itself
         self.checkDistFromItself = RobotCollisionWithItselfChecking(self.angles).checkingCollisionWithItself()
@@ -95,18 +95,25 @@ class GlobalRobotChecking():
         if areaChecking[6] != np.True_:
             print("Robot is out of the working area")
             self.isValid = False
+        else:
+            self.validPositions.append(self.angles)
 
         # If the robot is too close to the ground, print a warning and mark the state as invalid
         if any(value is np.False_ for value in self.checkingDistanceFromTheGround.values()):
             print("Robot is too close to the ground")
             self.isValid = False
+        else: 
+            self.validPositions.append(self.angles)
 
         # If the robot is too close to itself, print a warning and mark the state as invalid
         if any(value is False for value in self.checkDistFromItself.values()):
             print("Robot is too close to itself")
             self.isValid = False
+        else: 
+            self.validPositions.append(self.angles)
 
         # If the robot is in a valid state, add the current angles to the list of valid positions
-        if self.isValid:
-            self.validPositions.append(self.angles)
-            return self.validPositions
+        # if self.isValid:
+        #     self.validPositions.append(self.angles)
+        #     print("here")
+        #     return self.validPositions

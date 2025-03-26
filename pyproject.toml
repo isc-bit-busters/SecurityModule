@@ -16,6 +16,7 @@ dev = [
     "pytest>=8.3.5",
     "pytest-cov>=6.0.0",
 ]
-
+[tool.setuptools]
+packages = ["security"]
 [tool.uv.sources]
 urbasic = { git = "https://github.com/6figuress/ur3e-control.git" }

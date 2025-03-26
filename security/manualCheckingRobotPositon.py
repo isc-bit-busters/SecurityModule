@@ -20,6 +20,6 @@ class ValidateRobotPosition():
 
 
     def _validate(self, angles: list[float], holdAngles :list[float]):
-        checkingTasks = GlobalRobotChecking(angles,holdAngles=holdAngles)
+        checkingTasks = GlobalRobotChecking(angles)
         self.line.append(checkingTasks.checkNextBehaviour())
 

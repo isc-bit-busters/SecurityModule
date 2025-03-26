@@ -30,7 +30,7 @@ class RobotCollisionWithItselfChecking:
         self.cylinders = {}
 
         self.coordinates = ForwardKinematic(angles).getCoordinates()
-        self.safeDistancesFromTheGround = 0.1 # safe distance from the ground
+        self.safeDistancesFromTheGround = 0.17 # safe distance from the ground
         self._fillCylindersDict()
 
     def _createVectorCylinder(self, p1, q1):
@@ -160,7 +160,6 @@ class RobotCollisionWithItselfChecking:
         result = {}
         for joint_index in range(1, 6):  # Assuming there are 6 joints
             coord = self.cylinders.get(joint_index)
-            print(coord["q"])
             result[joint_index] = coord["q"]["z"] - self.safeDistancesFromTheGround >= 0.0
         return result 
 
@@ -257,7 +256,7 @@ if __name__ == "__main__":
     # iscoin = ISCoin(host="10.30.5.159", opened_gripper_size_mm=40)
     # angles= list(iscoin.robot_control.get_actual_joint_positions())
     # print(angles)
-    test = RobotCollisionWithItselfChecking(collGround)
+    test = RobotCollisionWithItselfChecking(nocoll)
     print(test.checkingCollisionWithItself())
     print(test.checkingCollisionWithGround())
     test.plotCylinders()
