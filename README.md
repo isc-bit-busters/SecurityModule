@@ -22,7 +22,7 @@ SecurityModule is a project aimed at ensuring the safety and collision detection
 
 To install the SecurityModule
 
-uv install git+https://github.com/6figuress/SecurityModule.git
+uv add git+https://github.com/6figuress/SecurityModule.git
 
 To update changes:
 
