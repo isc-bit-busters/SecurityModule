@@ -4,12 +4,11 @@ from urbasic import ISCoin
 import numpy as np
 
 from .checkAnglesVariation import checkAngleVariation
-from .robotPositionChecking import DistanceFromGroundChecking
 from .workingAreaChecking import WorkingAreaRobotChecking
 from .collisionWithItselfCheck import RobotCollisionWithItselfChecking
 
 class GlobalRobotChecking():
-    def __init__(self, angles: list[float], interval: float = None, iscoin: ISCoin = None, logs = True):
+    def __init__(self, angles: list[float], logs,  interval: float = None, iscoin: ISCoin = None):
         """
         Initializes the GlobalRobotChecking class.
 

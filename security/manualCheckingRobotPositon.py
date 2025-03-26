@@ -5,6 +5,7 @@ from .globalRobotChecking import GlobalRobotChecking
 
 class ValidateRobotPosition():
     def __init__(self, allRobotPosition: list[list[list[float]]], logs = True):
+        self.logs = logs
         self.allRobotPosition = allRobotPosition
         self.finalPositions = []
         self.line= []
@@ -21,6 +22,6 @@ class ValidateRobotPosition():
 
 
     def _validate(self, angles: list[float]):
-        checkingTasks = GlobalRobotChecking(angles, logs = True)
+        checkingTasks = GlobalRobotChecking(angles, self.logs)
         self.line.append(checkingTasks.checkNextBehaviour())
 
