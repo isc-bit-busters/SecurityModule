@@ -6,8 +6,8 @@ from .forwardKinematics import ForwardKinematic
 
 class Interpolation():
     def __init__(self):
-        self.anglesDistanceVariation  = 0.1  # Threshold for skipping interpolation
-        self.t = 0.01 
+        self.anglesDistanceVariation  = 0.0001  # Threshold for skipping interpolation
+        self.t = 0.00001 
 
     def _getLinearInterpolation(self, theta1, theta2, t):
         """Performs linear interpolation between two angles without wrapping."""
