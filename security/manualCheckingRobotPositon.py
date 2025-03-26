@@ -16,12 +16,14 @@ class ValidateRobotPosition():
             self.line = []
             for i in range(1,len(self.robotPosition)):
                 self._validate(self.robotPosition[i])
-                self.finalPositions.append(self.line)
+        
+            self.finalPositions.append(self.line)
 
 
 
 
     def _validate(self, angles: list[float]):
         checkingTasks = GlobalRobotChecking(angles, self.logs)
-        self.line.append(checkingTasks.checkNextBehaviour())
-
+        angle = checkingTasks.checkNextBehaviour()  
+        if len(angle) != 0:
+            self.line.append(angle)

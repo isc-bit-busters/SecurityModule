@@ -8,7 +8,7 @@ from .workingAreaChecking import WorkingAreaRobotChecking
 from .collisionWithItselfCheck import RobotCollisionWithItselfChecking
 
 class GlobalRobotChecking():
-    def __init__(self, angles: list[float], logs,  interval: float = None, iscoin: ISCoin = None):
+    def __init__(self, angles: list[float], logs=True,  interval: float = None, iscoin: ISCoin = None):
         """
         Initializes the GlobalRobotChecking class.
 
@@ -95,7 +95,7 @@ class GlobalRobotChecking():
             if self.logs:
                 print("Robot is out of the working area")
             self.isValid = False
-        else:
+        elif len(self.validPositions) == 0:
             self.validPositions.append(self.angles)
 
         # If the robot is too close to the ground, print a warning and mark the state as invalid
@@ -103,7 +103,7 @@ class GlobalRobotChecking():
             if self.logs:
                 print("Robot is too close to the ground")
             self.isValid = False
-        else: 
+        elif len(self.validPositions) == 0: 
             self.validPositions.append(self.angles)
 
         # If the robot is too close to itself, print a warning and mark the state as invalid
@@ -111,7 +111,7 @@ class GlobalRobotChecking():
             if self.logs:
                 print("Robot is too close to itself")
             self.isValid = False
-        else: 
+        elif len(self.validPositions) == 0: 
             self.validPositions.append(self.angles)
 
         return self.validPositions

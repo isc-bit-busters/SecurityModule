@@ -28,7 +28,7 @@ iscoin.robot_control.reset_error()
 
 jsonPath = "security/trajectories_test/traj_test_collision_all_joints.json"
 waypoints = readJson(jsonPath)
-checking_task = GlobalRobotChecking(waypoints[0],interval, iscoin=iscoin)  #change with the first angle detected by the robot
+checking_task = GlobalRobotChecking(waypoints[0],interval=interval, iscoin=iscoin)  #change with the first angle detected by the robot
 checking_task.start()  # Start the task
 
 while True:
