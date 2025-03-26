@@ -6,12 +6,21 @@ from .forwardKinematics import ForwardKinematic
 
 class Interpolation():
     def __init__(self):
-        self.t = 0.1  # Step size for interpolation (smaller = more points)
+        self.anglesDistanceVariation  = 0.05  # Threshold for skipping interpolation
+        self.t = 0.01  # Step size for interpolation (smaller = more points)
 
     def _getLinearInterpolation(self, theta1, theta2, t):
         """Performs linear interpolation between two angles, considering wrapping."""
         diff = (theta2 - theta1 + math.pi) % (2 * math.pi) - math.pi  # Wrap to [-π, π]
         return (theta1 + t * diff) % (2 * math.pi)
+
+    def _getAngleDistance(self, theta1, theta2):
+        """Calculates the shortest distance between two angles."""
+        return ((theta2 - theta1 + math.pi) % (2 * math.pi)) - math.pi
+
+    def _isTooClose(self, theta1, theta2):
+        """Check if two angles are too close to interpolate."""
+        return abs(self._getAngleDistance(theta1, theta2)) < self.anglesDistanceVariation
 
     def getInterpolatedTrajectory(self, angles1: list[float], angles2: list[float]):
         """
@@ -20,12 +29,18 @@ class Interpolation():
         """
         def interpolate_recursive(theta1, theta2):
             """Generates an array of interpolated values between theta1 and theta2."""
+            if self._isTooClose(theta1, theta2):
+                return [theta1]
+
+            # Create multiple steps from theta1 to theta2
             steps = [theta1]
             num_steps = int(1 / self.t)  # Number of interpolation points
             for i in range(1, num_steps + 1):
                 interpolated_angle = self._getLinearInterpolation(theta1, theta2, i * self.t)
                 steps.append(interpolated_angle)
+
             return steps
+
 
         # Interpolating each angle independently
         interpolated_angles_per_joint = [interpolate_recursive(angles1[i], angles2[i]) for i in range(6)]
@@ -38,16 +53,11 @@ class Interpolation():
         ]
 
         return interpolated_trajectory
-
     def drawTrajectory(self, trajectory):
-
         fig = go.Figure()
 
         # Convert trajectory to joint positions using FK
         all_joint_positions = [ForwardKinematic(angles).getCoordinates() for angles in trajectory]
-
-        # Debug print to check the structure of output
-        print("DEBUG: Joint positions ->", all_joint_positions)
 
         num_joints = len(all_joint_positions[0])  # Number of joints in the arm
 
@@ -82,6 +92,36 @@ class Interpolation():
         )
 
         fig.show()
+
+        # Plot angles variation
+        fig_angles = go.Figure()
+
+        num_angles = len(trajectory[0])  # Number of angles (joints)
+        angle_steps = list(range(len(trajectory)))
+
+        # Prepare lists for each angle
+        angles = [[] for _ in range(num_angles)]
+
+        # Collect angle values over all steps
+        for step in trajectory:
+            for i, angle in enumerate(step):
+                angles[i].append(angle)
+
+        # Plot each angle's variation over steps
+        for i in range(num_angles):
+            fig_angles.add_trace(go.Scatter(
+                x=angle_steps, y=angles[i],
+                mode='lines+markers',
+                name=f'Angle {i + 1}'
+            ))
+
+        fig_angles.update_layout(
+            title="Joint Angles Variation",
+            xaxis_title="Step",
+            yaxis_title="Angle (radians)"
+        )
+
+        fig_angles.show()
 
 
 
