@@ -110,4 +110,4 @@ test = ValidateRobotPosition([np.array([[-1.8742882 ,  2.8890624 ,  2.16146255, 
          2.04239964],
        [ 0.47160348,  0.23572983, -1.41534889, -0.392079  , -1.57125628,
          2.04239964]])], logs=False)
-print(test.finalPositions)
+print(type(test.finalPositions[0][0][0]))

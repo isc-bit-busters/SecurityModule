@@ -114,4 +114,4 @@ class GlobalRobotChecking():
         elif len(self.validPositions) == 0: 
             self.validPositions.append(self.angles)
 
-        return self.validPositions
+        return list(self.validPositions)
