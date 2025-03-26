@@ -6,20 +6,20 @@ from .forwardKinematics import ForwardKinematic
 
 class Interpolation():
     def __init__(self):
-        self.anglesDistanceVariation  = 0.05  # Threshold for skipping interpolation
-        self.t = 0.01  # Step size for interpolation (smaller = more points)
+        self.anglesDistanceVariation  = 0.1  # Threshold for skipping interpolation
+        self.t = 0.01 
 
     def _getLinearInterpolation(self, theta1, theta2, t):
-        """Performs linear interpolation between two angles, considering wrapping."""
-        diff = (theta2 - theta1 + math.pi) % (2 * math.pi) - math.pi  # Wrap to [-π, π]
-        return (theta1 + t * diff) % (2 * math.pi)
-
+        """Performs linear interpolation between two angles without wrapping."""
+        diff = theta2 - theta1  # No wrapping
+        return theta1 + t * diff
     def _getAngleDistance(self, theta1, theta2):
         """Calculates the shortest distance between two angles."""
         return ((theta2 - theta1 + math.pi) % (2 * math.pi)) - math.pi
 
     def _isTooClose(self, theta1, theta2):
         """Check if two angles are too close to interpolate."""
+        
         return abs(self._getAngleDistance(theta1, theta2)) < self.anglesDistanceVariation
 
     def getInterpolatedTrajectory(self, angles1: list[float], angles2: list[float]):
@@ -54,45 +54,7 @@ class Interpolation():
 
         return interpolated_trajectory
     def drawTrajectory(self, trajectory):
-        fig = go.Figure()
-
-        # Convert trajectory to joint positions using FK
-        all_joint_positions = [ForwardKinematic(angles).getCoordinates() for angles in trajectory]
-
-        num_joints = len(all_joint_positions[0])  # Number of joints in the arm
-
-        # Prepare lists for each joint
-        joint_x = [[] for _ in range(num_joints)]
-        joint_y = [[] for _ in range(num_joints)]
-        joint_z = [[] for _ in range(num_joints)]
-
-        # Collect joint positions over all steps
-        for joints in all_joint_positions:
-            for i, joint in enumerate(joints.values()):
-                joint_x[i].append(joint["x"])
-                joint_y[i].append(joint["y"])
-                joint_z[i].append(joint["z"])
-
-        # Plot each joint's motion separately
-        for i in range(num_joints):
-            fig.add_trace(go.Scatter3d(
-                x=joint_x[i], y=joint_y[i], z=joint_z[i],
-                mode='lines+markers',
-                name=f'Joint {i + 1}',
-                line=dict(width=2)
-            ))
-
-        fig.update_layout(
-            title="Robot Arm Interpolated Motion",
-            scene=dict(
-                xaxis_title="X Position",
-                yaxis_title="Y Position",
-                zaxis_title="Z Position"
-            )
-        )
-
-        fig.show()
-
+        """Draws a trajectory of joint angles."""
         # Plot angles variation
         fig_angles = go.Figure()
 
@@ -129,7 +91,7 @@ class Interpolation():
 if __name__ == "__main__":
     angles = [
         [0.9509, -1.6623, 0.6353, -0.5976, -1.5722, 0.0],  # First set of angles
-        [0.9509, -1.6623, 1.8353, -0.5976, -1.5722, 0.0],  # Second set of angles
+        [ 0.0, -1.0, 2.0, 0.0, 0.0, 0.0],  # Second set of angles
     ]
 
     interpolation = Interpolation()
