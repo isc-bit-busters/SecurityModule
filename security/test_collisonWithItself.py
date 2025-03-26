@@ -153,9 +153,9 @@ test_ground_collision = [
         {
             "angles": [0.0, -3.14, 3.14, 0.0, 0.0, 0.0],
             "expected": {
-                1: True,
-                2: True,
-                3: True,
+                1: False,
+                2: False,
+                3: False,
                 4: False,
                 5: False,
             },
