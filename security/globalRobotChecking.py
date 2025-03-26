@@ -80,7 +80,6 @@ class GlobalRobotChecking():
         # Perform real-time behavior checks if an interval is specified
         if self.interval is not None:
             self._beahviourForRealTime()
-        print(self.an)
         # Check if the robot is within the working area
         self.safeAreaChecking = WorkingAreaRobotChecking(0, 0, 0, 0.62, self.angles)
         areaChecking = self.safeAreaChecking.checkPointsInHalfOfSphere()
@@ -115,5 +114,5 @@ class GlobalRobotChecking():
         # If the robot is in a valid state, add the current angles to the list of valid positions
         # if self.isValid:
         #     self.validPositions.append(self.angles)
-        #     print("here")
         #     return self.validPositions
+        return self.validPositions
