@@ -42,13 +42,18 @@ class GlobalRobotChecking():
         """
         The task that runs periodically to check the robot's behavior.
         """
-        i = 0
-        while not self._stop_event.is_set():  # Continue running until stop is requested
+        while True:  # Continue running until stop is requested
             # Get the current joint positions from the robot
             self.angles = self.iscoin.robot_control.get_actual_joint_positions().toList()
-            self.checkNextBehaviour()  # Perform the next behavior check
-            self.isValid = True  # Reset the validity flag
+            self.validPositions = []
+            self.validPositions=self.checkNextBehaviour()  # Perform the next behavior check
+            if not self.validPositions: 
+                self.iscoin.robot_control.stopj(self.angles)
+                break
             self._stop_event.wait(self.interval)  # Wait for the specified interval (non-blocking sleep)
+    
+
+
 
     def stop(self):
         """
