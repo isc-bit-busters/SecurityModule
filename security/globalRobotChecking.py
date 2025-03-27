@@ -6,7 +6,7 @@ import numpy as np
 
 from .checkAnglesVariation import checkAngleVariation
 from .workingAreaChecking import WorkingAreaRobotChecking
-from .collisionChecking import RobotCollisionWithItselfChecking
+from .collisionChecking import RobotCollisionCheck 
 
 class GlobalRobotChecking():
     def __init__(self, angles: list[float], logs=True,  interval: float = None, iscoin: ISCoin = None):
@@ -97,10 +97,10 @@ class GlobalRobotChecking():
         areaChecking = self.safeAreaChecking.checkPointsInHalfOfSphere()
 
         # Check if the robot is too close to the ground
-        self.checkingDistanceFromTheGround = RobotCollisionWithItselfChecking(self.angles).checkingCollisionWithGround()
+        self.checkingDistanceFromTheGround = RobotCollisionCheck (self.angles).checkingCollisionWithGround()
 
         # Check if the robot is colliding with itself
-        self.checkDistFromItself = RobotCollisionWithItselfChecking(self.angles).checkingCollisionWithItself()
+        self.checkDistFromItself = RobotCollisionCheck (self.angles).checkingCollisionWithItself()
 
         # If the robot is out of the working area, print a warning and mark the state as invalid
         if areaChecking[6] != np.True_:

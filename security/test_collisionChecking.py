@@ -1,6 +1,6 @@
 import pytest
 
-from .collisionChecking import RobotCollisionWithItselfChecking
+from .collisionChecking import RobotCollisionCheck 
 
 # Define multiple sets of angles for testing
 test_angles = [
@@ -241,7 +241,7 @@ test_ground_collision = [
 def test_checkingCollisonWithItself(test_case):
     angles = test_case["angles"]
     expected = test_case["expected"]
-    robot = RobotCollisionWithItselfChecking(angles)
+    robot = RobotCollisionCheck (angles)
     result = robot.checkingCollisionWithItself()
     assert result == expected
 
@@ -251,7 +251,7 @@ def test_checkingCollisonWithItself(test_case):
 def test_checkingCollisionWithGround(test_case):
     angles = test_case["angles"]
     expected = test_case["expected"]
-    robot = RobotCollisionWithItselfChecking(angles)
+    robot = RobotCollisionCheck (angles)
     result = robot.checkingCollisionWithGround()
     assert result == expected
 if __name__ == "__main__":

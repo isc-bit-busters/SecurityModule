@@ -9,7 +9,7 @@ from urbasic import ISCoin, Joint6D
 
 
 
-class RobotCollisionWithItselfChecking:
+class RobotCollisionCheck :
     def __init__(self, angles: list[float]):
         self.angles = angles
         self.diameters = {
@@ -249,7 +249,7 @@ if __name__ == "__main__":
     # iscoin = ISCoin(host="10.30.5.159", opened_gripper_size_mm=40)
     # angles= list(iscoin.robot_control.get_actual_joint_positions())
     # print(angles)
-    test = RobotCollisionWithItselfChecking(testAngles)
+    test = RobotCollisionCheck (testAngles)
     print(test.checkingCollisionWithItself())
     print(test.checkingCollisionWithGround())
     test.plotCylinders()
