@@ -137,11 +137,11 @@ class Interpolation:
 if __name__ == "__main__":
     angles = [
         [0.9509, -1.6623, 0.6353, -0.5976, -1.5722, 0.0],  # First set of angles
-        [0.9509, -1.6623, 1.6353, -0.5976, -1.5722, 0.0],  # Second set of angles
         [0.9509, -1.6623, 0.6353, -0.7, -1.5722, 0.0],  # First set of angles
-        [0.9509, 1.6623, 1.8353, -0.5976, -1.5722, 0.0],
     ]
-
-    interpolation = Interpolation(True, False)
-    res = interpolation.checkSafeTrajectories(angles)
-    print(res)
+    interpolation = Interpolation(False, False)
+    notSafeTrajectories = interpolation.checkSafeTrajectories(angles) 
+    if not notSafeTrajectories:
+        print(angles)
+    else:
+        raise ValueError(f"Unsafe trajectories detected: {notSafeTrajectories}")
