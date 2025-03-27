@@ -243,20 +243,13 @@ class RobotCollisionWithItselfChecking:
 collison = [0.0, -2.14, 2.14, 0.4, 3.14, 0.0]
 nocoll = [0.9509, -1.6623, 0.6353, -0.5976, -1.5722, 0.0]
 collGround = [ 0.0, -3.14, 3.14, 0.0, 0.0, 0.0]
-test = [
-            3.141,  # Joint 1 (π)
-            2.094,  # Joint 2 (π/3)
-            0.785,  # Joint 3 (π/4)
-            4.712,  # Joint 4 (3π/2)
-            6.283,  # Joint 5 (2π)
-            9.425,  # Joint 6 (3π)]
-        ]
+testAngles = [0.71626037, 1.45210993, -1.86202073, -2.74168348, 0.84818202, 1.57989872]
 if __name__ == "__main__":
    
     # iscoin = ISCoin(host="10.30.5.159", opened_gripper_size_mm=40)
     # angles= list(iscoin.robot_control.get_actual_joint_positions())
     # print(angles)
-    test = RobotCollisionWithItselfChecking(nocoll)
+    test = RobotCollisionWithItselfChecking(testAngles)
     print(test.checkingCollisionWithItself())
     print(test.checkingCollisionWithGround())
     test.plotCylinders()

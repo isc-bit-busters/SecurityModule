@@ -77,6 +77,12 @@ class GlobalRobotChecking():
         """
         Performs various checks to ensure the robot is operating within safe parameters.
         """
+
+        if self.logs:
+            print("===== Checking pose =====")
+
+        isCurrentAngleValid = True
+
         # Perform real-time behavior checks if an interval is specified
         if self.interval is not None:
             self._beahviourForRealTime()
@@ -94,24 +100,22 @@ class GlobalRobotChecking():
         if areaChecking[6] != np.True_:
             if self.logs:
                 print("Robot is out of the working area")
-            self.isValid = False
-        elif len(self.validPositions) == 0:
-            self.validPositions.append(self.angles)
+            isCurrentAngleValid = False
 
         # If the robot is too close to the ground, print a warning and mark the state as invalid
         if any(value is np.False_ for value in self.checkingDistanceFromTheGround.values()):
             if self.logs:
                 print("Robot is too close to the ground")
-            self.isValid = False
-        elif len(self.validPositions) == 0: 
-            self.validPositions.append(self.angles)
+            isCurrentAngleValid = False
 
         # If the robot is too close to itself, print a warning and mark the state as invalid
         if any(value is False for value in self.checkDistFromItself.values()):
             if self.logs:
                 print("Robot is too close to itself")
-            self.isValid = False
-        elif len(self.validPositions) == 0: 
-            self.validPositions.append(self.angles)
+            isCurrentAngleValid = False
+
+
+        if isCurrentAngleValid:
+            self.validPositions.append(self.angles)  # Append the current angles to the valid positions list
 
         return list(self.validPositions)
