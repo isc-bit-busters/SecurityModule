@@ -243,7 +243,7 @@ class RobotCollisionWithItselfChecking:
 collison = [0.0, -2.14, 2.14, 0.4, 3.14, 0.0]
 nocoll = [0.9509, -1.6623, 0.6353, -0.5976, -1.5722, 0.0]
 collGround = [ 0.0, -3.14, 3.14, 0.0, 0.0, 0.0]
-testAngles = [0.71626037, 1.45210993, -1.86202073, -2.74168348, 0.84818202, 1.57989872]
+testAngles = [0.0, -3.14, 3.14, 0.0, 0.0, 0.0]
 if __name__ == "__main__":
    
     # iscoin = ISCoin(host="10.30.5.159", opened_gripper_size_mm=40)
