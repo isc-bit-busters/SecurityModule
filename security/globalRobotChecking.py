@@ -20,7 +20,7 @@ class GlobalRobotChecking():
         """
         self.interval = interval  # Time interval for periodic checks
         self.running = False  # Flag to indicate if the checking is running
-        self.holdAngles = angles  # Store the initial angles
+        self.oldAngles = angles  # Store the initial angles
         self.angles = angles  # Current joint angles
         self._thread = None  # Thread for running the task
         self._stop_event = threading.Event()  # Event to handle stopping the thread
@@ -45,6 +45,8 @@ class GlobalRobotChecking():
         """
         The task that runs periodically to check the robot's behavior.
         """
+        self.angles = self.iscoin.robot_control.get_actual_joint_positions().toList()
+        self.oldAngles = self.angles  # Store the initial angles
         while True:  # Continue running until stop is requested
             # Get the current joint positions from the robot
             self.angles = self.iscoin.robot_control.get_actual_joint_positions().toList()
@@ -74,8 +76,8 @@ class GlobalRobotChecking():
         highVariations = []  # List to store joints with high variations
 
         # Check for angle variations and update holdAngles
-        highVariations, self.holdAngles = checkAngleVariation(self.angles, self.holdAngles, self.interval).checkVariation()
-        self.holdAngles = self.angles  # Update holdAngles with the current angles
+        highVariations, self.oldAngles = checkAngleVariation(self.angles, self.oldAngles, self.interval).checkVariation()
+        self.oldAngles = self.angles  # Update holdAngles with the current angles
 
         # If high variations are detected, print a warning and mark the state as invalid
         if highVariations and self.logs:
