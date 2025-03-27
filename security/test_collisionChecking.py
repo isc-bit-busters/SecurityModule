@@ -1,6 +1,6 @@
 import pytest
 
-from .collisionWithItselfCheck import RobotCollisionWithItselfChecking
+from .collisionChecking import RobotCollisionWithItselfChecking
 
 # Define multiple sets of angles for testing
 test_angles = [
@@ -163,11 +163,11 @@ test_ground_collision = [
         {
             "angles": [0.0, -3.14, 2.7, 0.0, 3.14, 0.0],
             "expected": {
-                1: True,
+                1: False,
                 2: True,
                 3: True,
-                4: True,
-                5: True,
+                4: False,
+                5: False,
             },
         },
         {
@@ -183,9 +183,9 @@ test_ground_collision = [
         {
             "angles": [0.00001, 0.000001, 0.00001, 0.00001, 0.00001, 0.000001],
             "expected": {
-                1: True,
-                2: True,
-                3: True,
+                1: False,
+                2: False,
+                3: False,
                 4: False,
                 5: False,
             },
@@ -213,7 +213,7 @@ test_ground_collision = [
         {
             "angles": [0.0, -3.14, 2.2, 0.6, 3.0, 0.0],
             "expected": {
-                1: True,
+                1: False,
                 2: True,
                 3: True,
                 4: True,

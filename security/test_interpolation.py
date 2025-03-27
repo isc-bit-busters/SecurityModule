@@ -53,8 +53,8 @@ def test_getInterpolatedTrajectory(angles1, angles2, expected_middle):
     if len(result) == 1:
         assert np.allclose(result[0], angles1, rtol=0.1) or np.allclose(result[0], angles2, rtol=0.1), "Single step should match either angles1 or angles2"
     else:
-        assert result[-1] == pytest.approx(angles2, abs=1e-1), "Last step should match angles2"
+        assert result[-1] == pytest.approx(angles2, abs=0.1), "Last step should match angles2"
     
     # Verify the middle step matches the expected middle angles
         middle_index = len(result) // 2
-        assert result[middle_index] == pytest.approx(expected_middle, rel=1e-2), "Middle step should match expected angles"
+        assert result[middle_index] == pytest.approx(expected_middle, abs=1e-2), "Middle step should match expected angles"

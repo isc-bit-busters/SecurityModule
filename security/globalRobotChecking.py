@@ -5,7 +5,7 @@ import numpy as np
 
 from .checkAnglesVariation import checkAngleVariation
 from .workingAreaChecking import WorkingAreaRobotChecking
-from .collisionWithItselfCheck import RobotCollisionWithItselfChecking
+from .collisionChecking import RobotCollisionWithItselfChecking
 
 class GlobalRobotChecking():
     def __init__(self, angles: list[float], logs=True,  interval: float = None, iscoin: ISCoin = None):
