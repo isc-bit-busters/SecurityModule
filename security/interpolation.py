@@ -83,7 +83,7 @@ class Interpolation:
         return True
 
 
-    def getAllInterpolatedAngles(self, angles: list[list[float]]):
+    def checkSafeTrajectories(self, angles: list[list[float]]):
         """Interpolates between all sets of angles in the list."""
         allnotSafePositions = {}
         for i in range(len(angles) - 1):
@@ -143,5 +143,5 @@ if __name__ == "__main__":
     ]
 
     interpolation = Interpolation(True, False)
-    res = interpolation.getAllInterpolatedAngles(angles)
+    res = interpolation.checkSafeTrajectories(angles)
     print(res)
