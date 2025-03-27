@@ -12,9 +12,9 @@ class ValidateRobotPosition():
         for i in range(len(self.allRobotPosition)):
             self.robotPosition = self.allRobotPosition[i]
 
-            self._validate(self.robotPosition[0])
+            
             self.line = []
-            for i in range(1,len(self.robotPosition)):
+            for i in range(0,len(self.robotPosition)):
                 self._validate(self.robotPosition[i])
         
             self.finalPositions.append(self.line)
