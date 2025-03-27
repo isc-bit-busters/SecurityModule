@@ -1,14 +1,16 @@
 import math
-import numpy as np
 import plotly.graph_objects as go
 
-from .forwardKinematics import ForwardKinematic
+from security.globalRobotChecking import GlobalRobotChecking
+
 
 
 class Interpolation:
-    def __init__(self):
+    def __init__(self, logs=True, stopAtFirstError=True,):
         self.anglesDistanceVariation = 0.1  # Threshold for skipping interpolation
         self.t = 0.1
+        self.logs = logs
+        self.stopAtFirstError = stopAtFirstError
 
     def _getLinearInterpolation(self, theta1, theta2, t):
         """Performs linear interpolation between two angles without wrapping."""
@@ -26,7 +28,7 @@ class Interpolation:
             abs(self._getAngleDistance(theta1, theta2)) < self.anglesDistanceVariation
         )
 
-    def getInterpolatedTrajectory(self, angles1: list[float], angles2: list[float]):
+    def _getInterpSingleTrajectory(self, angles1: list[float], angles2: list[float]):
         """
         Interpolates between two sets of 6 angles (angles1 and angles2).
         Generates multiple interpolated angles if needed.
@@ -65,16 +67,34 @@ class Interpolation:
             for i in range(max_steps)
         ]
 
+
         return interpolated_trajectory
+    
+    def _isTrajectoriesSafe(self, angles1, angles2):
+        """Check if two trajectories are safe."""
+        interpolated_trajectory = self._getInterpSingleTrajectory(angles1, angles2)
+        for i in range(len(interpolated_trajectory)):
+            positions = GlobalRobotChecking(interpolated_trajectory[i],self.logs).checkNextBehaviour()
+            if not positions:
+                if self.logs:
+                    print(f"Unsafe trajectory between angles {angles1} and angles {angles2}")
+                return False 
+    
+        return True
+
 
     def getAllInterpolatedAngles(self, angles: list[list[float]]):
         """Interpolates between all sets of angles in the list."""
-        interpolated_angles = []
+        allnotSafePositions = {}
         for i in range(len(angles) - 1):
-            interpolated_angles.append(
-                self.getInterpolatedTrajectory(angles[i], angles[i + 1])
-            )
-        return interpolated_angles
+            isSafe = self._isTrajectoriesSafe(angles[i], angles[i + 1])
+            if not isSafe:
+                if self.stopAtFirstError:
+                    return (i, i+1), (angles[i], angles[i+1])
+                allnotSafePositions[(i,i+1)] = (angles[i], angles[i+1])
+        return allnotSafePositions
+                
+     
 
     def drawTrajectory(self, trajectory):
         """Draws a trajectory of joint angles."""
@@ -110,18 +130,18 @@ class Interpolation:
         )
 
         fig_angles.show()
+    
+
 
 
 if __name__ == "__main__":
     angles = [
         [0.9509, -1.6623, 0.6353, -0.5976, -1.5722, 0.0],  # First set of angles
         [0.9509, -1.6623, 1.6353, -0.5976, -1.5722, 0.0],  # Second set of angles
+        [0.9509, -1.6623, 0.6353, -0.7, -1.5722, 0.0],  # First set of angles
         [0.9509, 1.6623, 1.8353, -0.5976, -1.5722, 0.0],
     ]
 
-    interpolation = Interpolation()
-    result = interpolation.getAllInterpolatedAngles(angles)
-    interpolation.drawTrajectory(result)
-
-    import ipdb
-    ipdb.set_trace()
+    interpolation = Interpolation(True, False)
+    res = interpolation.getAllInterpolatedAngles(angles)
+    print(res)

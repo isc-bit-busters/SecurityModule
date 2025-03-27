@@ -38,7 +38,7 @@ from .interpolation import Interpolation
 )
 def test_getInterpolatedTrajectory(angles1, angles2, expected_middle):
     interpolation = Interpolation()
-    result = interpolation.getInterpolatedTrajectory(angles1, angles2)
+    result = interpolation._getInterpSingleTrajectory(angles1, angles2)
     
     # Verify the structure of the result
     assert isinstance(result, list), "Result should be a list"

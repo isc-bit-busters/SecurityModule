@@ -1,3 +1,4 @@
+from math import radians
 import threading
 
 from urbasic import ISCoin
@@ -28,6 +29,8 @@ class GlobalRobotChecking():
         self.validPositions = []  # List to store valid positions
         self.isValid = True  # Flag to indicate if the robot is in a valid state
         self.logs = logs  # Flag to indicate if logs should be printed
+        self.isCurrentAngleValid = True
+
 
     def start(self):
         """
@@ -48,7 +51,8 @@ class GlobalRobotChecking():
             self.validPositions = []
             self.validPositions=self.checkNextBehaviour()  # Perform the next behavior check
             if not self.validPositions: 
-                self.iscoin.robot_control.stopj(self.angles)
+                radAcc = radians(5)
+                self.iscoin.robot_control.stopj([radAcc, radAcc, radAcc, radAcc, radAcc, radAcc])
                 break
             self._stop_event.wait(self.interval)  # Wait for the specified interval (non-blocking sleep)
     
@@ -83,11 +87,6 @@ class GlobalRobotChecking():
         Performs various checks to ensure the robot is operating within safe parameters.
         """
 
-        if self.logs:
-            print("===== Checking pose =====")
-
-        isCurrentAngleValid = True
-
         # Perform real-time behavior checks if an interval is specified
         if self.interval is not None:
             self._beahviourForRealTime()
@@ -105,22 +104,22 @@ class GlobalRobotChecking():
         if areaChecking[6] != np.True_:
             if self.logs:
                 print("Robot is out of the working area")
-            isCurrentAngleValid = False
+            self.isCurrentAngleValid = False
 
         # If the robot is too close to the ground, print a warning and mark the state as invalid
         if any(value is np.False_ for value in self.checkingDistanceFromTheGround.values()):
             if self.logs:
                 print("Robot is too close to the ground")
-            isCurrentAngleValid = False
+            self.isCurrentAngleValid = False
 
         # If the robot is too close to itself, print a warning and mark the state as invalid
         if any(value is False for value in self.checkDistFromItself.values()):
             if self.logs:
                 print("Robot is too close to itself")
-            isCurrentAngleValid = False
+            self.isCurrentAngleValid = False
 
 
-        if isCurrentAngleValid:
+        if self.isCurrentAngleValid:
             self.validPositions.append(self.angles)  # Append the current angles to the valid positions list
 
         return list(self.validPositions)
