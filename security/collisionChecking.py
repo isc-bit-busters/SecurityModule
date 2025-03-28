@@ -16,7 +16,7 @@ class RobotCollisionCheck :
             1: 0.128,  # to be defined
             2: 0.128,
             3: 0.09,
-            4: 0.065,
+            4: 0.09,
             5: 0.085,
             6: 0.085,
         }
@@ -75,41 +75,68 @@ class RobotCollisionCheck :
                 break
 
     def _closest_points_between_segments(self, p1, q1, p2, q2):
-        """Find the closest points between two line segments."""
+        """Robust method to find closest points between two line segments."""
         # Convert points to numpy arrays
         p1 = np.array([p1["x"], p1["y"], p1["z"]])
         q1 = np.array([q1["x"], q1["y"], q1["z"]])
         p2 = np.array([p2["x"], p2["y"], p2["z"]])
         q2 = np.array([q2["x"], q2["y"], q2["z"]])
-
-        # Direction vectors of the segments
+        
+        # Direction vectors
         d1 = q1 - p1
         d2 = q2 - p2
         r = p1 - p2
-
-        # Compute parameters for the closest points
+        
         a = np.dot(d1, d1)
         b = np.dot(d1, d2)
         c = np.dot(d2, d2)
         d = np.dot(d1, r)
         e = np.dot(d2, r)
-        denom = a * c - b * b
-
-        if abs(denom) < 1e-6:  # Segments are parallel
+        f = np.dot(r, r)
+        
+        denom = a*c - b*b
+        
+        # Default values
+        s = 0.0
+        t = 0.0
+        
+        if denom < 1e-6:  # Segments are nearly parallel
+            # Handle parallel segments properly
             s = 0.0
-            t = e / c if c > 1e6 else 0.0
+            if b > c:  # Project p1 onto d2
+                t = d / b
+            else:       # Project p2 onto d1
+                t = e / c
+            t = np.clip(t, 0, 1)
         else:
-            s = (b * e - c * d) / denom
-            t = (a * e - b * d) / denom
-
-        # Clamp s and t to [0, 1] to ensure they lie within the segments
-        s = max(0, min(s, 1))
-        t = max(0, min(t, 1))
-
-        # Compute closest points
+            # General case
+            s = (b*e - c*d) / denom
+            t = (a*e - b*d) / denom
+            
+            # Check if closest points are outside segments
+            # and need to be clamped to endpoints
+            if s < 0:
+                s = 0
+                t = e / c
+                t = np.clip(t, 0, 1)
+            elif s > 1:
+                s = 1
+                t = (e + b) / c
+                t = np.clip(t, 0, 1)
+            
+            if t < 0:
+                t = 0
+                s = -d / a
+                s = np.clip(s, 0, 1)
+            elif t > 1:
+                t = 1
+                s = (b - d) / a
+                s = np.clip(s, 0, 1)
+        
+        # Final closest points
         closest_p1 = p1 + s * d1
         closest_p2 = p2 + t * d2
-
+        
         return closest_p1, closest_p2
 
     def _computeDistanceBetweenTwoAxis(self, cylinderKey1, cylinderKey2):
@@ -149,7 +176,7 @@ class RobotCollisionCheck :
 
                 if key2 in self.safeDistances.get(key1, {}):  # Avoid KeyError
                     distance = self._computeDistanceBetweenTwoCylinders(key1, key2)
-
+                    print(f"Distance between cylinder {key1} and {key2}: {distance}")
                     if distance <= self.safeDistances[key1][key2]:
                         cylinderDistances[(key1, key2)] = False
                     else:
@@ -217,7 +244,7 @@ class RobotCollisionCheck :
                     closest_p1, closest_p2 = self._closest_points_between_segments(
                         p1, q1, p2, q2
                     )
-
+                   
                     # Plot the line representing the distance
                     fig.add_trace(
                         go.Scatter3d(
@@ -243,7 +270,14 @@ class RobotCollisionCheck :
 collison = [0.0, -2.14, 2.14, 0.4, 3.14, 0.0]
 nocoll = [0.9509, -1.6623, 0.6353, -0.5976, -1.5722, 0.0]
 collGround = [ 0.0, -3.14, 3.14, 0.0, 0.0, 0.0]
-testAngles =   [0.9509, -1.6623, 0.6353, -0.7, -1.5722, 0.0]
+testAngles =   [
+                -0.1122,
+                -3.0658,
+                0.4916,
+                2.5814,
+                1.4586,
+                -1.5638
+            ]
 if __name__ == "__main__":
    
     # iscoin = ISCoin(host="10.30.5.159", opened_gripper_size_mm=40)
