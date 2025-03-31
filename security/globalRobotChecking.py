@@ -32,7 +32,7 @@ class GlobalRobotChecking():
         self.isCurrentAngleValid = True
 
 
-        self.checkingCollison= RobotCollisionCheck.runSimulation(self.angles)  # Check for collisions
+        self.checkingCollison= RobotCollisionCheck(False,True).runSimulation(self.angles)  # Check for collisions
 
     def start(self):
         """
