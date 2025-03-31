@@ -9,7 +9,7 @@ from .workingAreaChecking import WorkingAreaRobotChecking
 from .collisionChecking import RobotCollisionCheck 
 
 class GlobalRobotChecking():
-    def __init__(self, angles: list[float], logs=True,  interval: float = None, iscoin: ISCoin = None):
+    def __init__(self, logs=True,  interval: float = None, iscoin: ISCoin = None):
         """
         Initializes the GlobalRobotChecking class.
 
@@ -20,11 +20,10 @@ class GlobalRobotChecking():
         """
         self.interval = interval  # Time interval for periodic checks
         self.running = False  # Flag to indicate if the checking is running
-        self.oldAngles = angles  # Store the initial angles
-        self.angles = angles  # Current joint angles
         self._thread = None  # Thread for running the task
         self._stop_event = threading.Event()  # Event to handle stopping the thread
         self.deltaT = interval  # Time interval for checks
+        self.angles = None  # Current joint angles
         self.iscoin = iscoin  # Robot control instance
         self.validPositions = []  # List to store valid positions
         self.isValid = True  # Flag to indicate if the robot is in a valid state
@@ -32,7 +31,7 @@ class GlobalRobotChecking():
         self.isCurrentAngleValid = True
 
 
-        self.checkingCollison= RobotCollisionCheck(False,True).runSimulation(self.angles)  # Check for collisions
+        self.checkingCollison= RobotCollisionCheck(False,True)
 
     def start(self):
         """
@@ -86,16 +85,16 @@ class GlobalRobotChecking():
             print("High variations in the angles of the joints: ", highVariations)
             self.isValid = False
 
-    def checkNextBehaviour(self):
+    def checkNextBehaviour(self,angles):
         """
         Performs various checks to ensure the robot is operating within safe parameters.
         """
-
+        self.angles = angles  # Update the current angles
         # Perform real-time behavior checks if an interval is specified
         if self.interval is not None:
             self._beahviourForRealTime()
         # Check if the robot is within the working area
-        self.safeAreaChecking = WorkingAreaRobotChecking(0, 0, 0, 0.62, self.angles)
+        self.safeAreaChecking = WorkingAreaRobotChecking(0, 0, 0, 0.62, angles)
         areaChecking = self.safeAreaChecking.checkPointsInHalfOfSphere()
 
         # Check if the robot is too close to the ground

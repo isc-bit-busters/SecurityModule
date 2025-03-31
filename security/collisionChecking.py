@@ -27,7 +27,7 @@ class RobotCollisionCheck :
         p.setTimeStep(self.time_step)
         self.nim_joints = p.getNumJoints(self.robot_id)
         self.ground_id = p.loadURDF("plane.urdf", basePosition=[0, 0, 0])
-
+        self.penJoint = 11
 
         self.mapping = {0: 2, 1: 3, 2: 4, 3: 5, 4: 6, 5: 7}
 
@@ -41,7 +41,35 @@ class RobotCollisionCheck :
             if abs(targetAngles[i] - a) > tolerance:
                 return False
         return True
+    def check_working_area(self):
+        # working area definition
+        x_min = -0
+        x_max = 0.5
     
+        y_min = -0.5
+        y_max = 0.5
+    
+        z_min = 0
+        z_max = 0.5
+    
+        # getting the pen position and checking if it's in the working area
+        pen_pos = p.getLinkState(self.robot_id, self.penJoint)[0]
+        #print("pen position: ", pen_pos)
+        if pen_pos[0] < x_min or pen_pos[0] > x_max:
+            if self.logs:
+                print(f"The pen is currently out of the working area in X. (current X : {pen_pos[0]}, min - max : {x_min} - {x_max})")
+            return False
+        if pen_pos[1] < y_min or pen_pos[1] > y_max:
+            if self.logs:
+                print(f"The pen is currently out of the working area in Y. (current Y : {pen_pos[0]}, min - max : {y_min} - {y_max})")
+            return False
+        if pen_pos[2] < z_min or pen_pos[2] > z_max:
+            if self.logs:
+                print(f"The pen is currently out of the working area in Z. (current Z : {pen_pos[0]}, min - max : {z_min} - {z_max})")
+            return False
+        # If the pen is within the working area, return True
+        return True
+
 
     def checkingCollision(self):
         contact_points_robot = p.getContactPoints(self.robot_id, self.robot_id)  # Self-collision check
@@ -70,7 +98,13 @@ class RobotCollisionCheck :
                     print(f"⚠️ Collision with Ground: {getLinkName(contact[3])} touched the ground!")
                 isInCollision = False  # Collision detected
 
-        return isInCollision  # No collision
+        if not self.check_working_area():
+            isInCollision = False
+        
+
+        return isInCollision  
+    
+
     
     def isValidConfiguration(self,angles):
            # Set the robot to the desired joint configuration
@@ -111,3 +145,4 @@ if __name__ == "__main__":
     test = RobotCollisionCheck ()
     print("coll res",test.runSimulation(nocoll)
     )
+    print("working area", test.check_working_area())
