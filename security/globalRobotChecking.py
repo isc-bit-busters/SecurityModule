@@ -32,6 +32,8 @@ class GlobalRobotChecking():
         self.isCurrentAngleValid = True
 
 
+        self.checkingCollison= RobotCollisionCheck.runSimulation(self.angles)  # Check for collisions
+
     def start(self):
         """
         Starts the real-time checking process in a separate thread.
@@ -52,10 +54,10 @@ class GlobalRobotChecking():
             self.angles = self.iscoin.robot_control.get_actual_joint_positions().toList()
             self.validPositions = []
             self.validPositions=self.checkNextBehaviour()  # Perform the next behavior check
-            if not self.validPositions: 
-                radAcc = radians(5)
-                self.iscoin.robot_control.stopj([radAcc, radAcc, radAcc, radAcc, radAcc, radAcc])
-                break
+            # if not self.validPositions: 
+            #     radAcc = radians(5)
+            #     self.iscoin.robot_control.stopj([radAcc, radAcc, radAcc, radAcc, radAcc, radAcc])
+            #     break
             self._stop_event.wait(self.interval)  # Wait for the specified interval (non-blocking sleep)
     
 
@@ -97,10 +99,7 @@ class GlobalRobotChecking():
         areaChecking = self.safeAreaChecking.checkPointsInHalfOfSphere()
 
         # Check if the robot is too close to the ground
-        self.checkingDistanceFromTheGround = RobotCollisionCheck (self.angles).checkingCollisionWithGround()
-
-        # Check if the robot is colliding with itself
-        self.checkDistFromItself = RobotCollisionCheck (self.angles).checkingCollisionWithItself()
+       
 
         # If the robot is out of the working area, print a warning and mark the state as invalid
         if areaChecking[6] != np.True_:
@@ -108,20 +107,8 @@ class GlobalRobotChecking():
                 print("Robot is out of the working area")
             self.isCurrentAngleValid = False
 
-        # If the robot is too close to the ground, print a warning and mark the state as invalid
-        if any(value is np.False_ for value in self.checkingDistanceFromTheGround.values()):
-            if self.logs:
-                print("Robot is too close to the ground")
-            self.isCurrentAngleValid = False
 
-        # If the robot is too close to itself, print a warning and mark the state as invalid
-        if any(value is False for value in self.checkDistFromItself.values()):
-            if self.logs:
-                print("Robot is too close to itself")
-            self.isCurrentAngleValid = False
-
-
-        if self.isCurrentAngleValid:
+        if self.checkingCollison:
             self.validPositions.append(self.angles)  # Append the current angles to the valid positions list
 
         return list(self.validPositions)

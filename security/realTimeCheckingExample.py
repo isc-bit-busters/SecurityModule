@@ -39,7 +39,8 @@ while True:
 	# 	print("The robot is not in a stable position")
 	# 	test = False 
 	# 	break
-    time.sleep(1)
+	print(iscoin.robot_control.get_actual_joint_positions())
+	time.sleep(1)
 	#print(f'Joints are at {"iscoin.robot_control.get_actual_joint_positions()"} - going to {jo}')
 	#iscoin.robot_control.movej(jo, a = radians(20), v = radians(5))
 		
