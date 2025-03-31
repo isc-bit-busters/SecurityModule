@@ -30,7 +30,7 @@ class RobotCollisionCheck :
         self.cylinders = {}
 
         self.coordinates = ForwardKinematic(angles).getCoordinates()
-        self.safeDistancesFromTheGround = 0.02 # safe distance from the ground
+        self.safeDistancesFromTheGround = 0.2 # safe distance from the ground
         self._fillCylindersDict()
 
     def _createVectorCylinder(self, p1, q1):
