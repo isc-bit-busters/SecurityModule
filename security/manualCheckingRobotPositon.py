@@ -24,7 +24,6 @@ class ValidateRobotPosition():
 
     def _validate(self, angles: list[float]):
         angle = self.checkingTasks.checkNextBehaviour(angles)  
-        print("angles: ", angles)
         if len(angle) != 0:
             self.line.append(angles)
 
