@@ -1,0 +1,2 @@
+recursive-include security/urdf *.urdf
+recursive-include security/urdf/collision *.stl
