@@ -3,6 +3,8 @@ import numpy as np
 import pybullet as p
 import pybullet_data
 
+from security.loadUrdf import loadPlane, loadRobot
+
 from .forwardKinematics import ForwardKinematic
 
 import plotly.graph_objects as go
@@ -21,12 +23,12 @@ class RobotCollisionCheck :
         else:
             p.connect(p.DIRECT)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
-        self.robot_id = p.loadURDF("security/iscoin_azz.urdf", useFixedBase=True, flags=p.URDF_USE_SELF_COLLISION)
+        self.robot_id = loadRobot()
         self.FPS = 60
         self.time_step = 1 /  self.FPS 
         p.setTimeStep(self.time_step)
         self.nim_joints = p.getNumJoints(self.robot_id)
-        self.ground_id = p.loadURDF("plane.urdf", basePosition=[0, 0, 0])
+        self.ground_id = loadPlane()
         self.penJoint = 11
 
         self.mapping = {0: 2, 1: 3, 2: 4, 3: 5, 4: 6, 5: 7}
@@ -138,18 +140,18 @@ class RobotCollisionCheck :
         p.stepSimulation()
 
         return self.checkingCollision(angles)  # True if no collisions, False otherwise
-        
     def runSimulation(self, angles):
 
         collison = False 
-        collison = self.isValidConfiguration(angles)
         while p.isConnected():
-            if collison !=  None:
-                if self.gui:
-                    time.sleep(2)                    
-                return collison
+            collison = self.isValidConfiguration(angles)
 
-    
+            if collison is not None:
+                if self.gui:
+                    time.sleep(2)
+                result = collison
+                collison = False  # Reset collison before returning
+                return result
  
 collison = [ 0.0, -3.14, 2.2, 0.6, 3.0, 0.0]
 nocoll = [0.9509, -1.6623, 0.6353, -0.5976, -1.5722, 0.0]
