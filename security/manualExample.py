@@ -26,10 +26,10 @@ test = ValidateRobotPosition([
                 2.5814,
                 1.4586,
                 -1.5638
-            ]
+            ],[0.9509, -1.6623, 0.6353, -0.5976, -1.5722, 0.0]
     ]
     # Add other nested lists here in the same format
-], logs=True)
+], logs=True, gui=False)
 
 print("Final Positions:")
 

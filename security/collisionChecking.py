@@ -43,66 +43,91 @@ class RobotCollisionCheck :
         return True
     def check_working_area(self):
         # working area definition
-        x_min = -0
-        x_max = 0.5
+        x_min = -0.31
+        x_max = 0.62
     
-        y_min = -0.5
-        y_max = 0.5
+        y_min = 0
+        y_max = 0.62
     
-        z_min = 0
-        z_max = 0.5
+        z_min = -0.0
+        z_max = 0.62
     
         # getting the pen position and checking if it's in the working area
         pen_pos = p.getLinkState(self.robot_id, self.penJoint)[0]
         #print("pen position: ", pen_pos)
         if pen_pos[0] < x_min or pen_pos[0] > x_max:
             if self.logs:
-                print(f"The pen is currently out of the working area in X. (current X : {pen_pos[0]}, min - max : {x_min} - {x_max})")
+                print(f"Out of working area. The pen is currently out of the working area in X")
             return False
         if pen_pos[1] < y_min or pen_pos[1] > y_max:
             if self.logs:
-                print(f"The pen is currently out of the working area in Y. (current Y : {pen_pos[0]}, min - max : {y_min} - {y_max})")
+                print(f"Out of working area. The pen is currently out of the working area in Y")
             return False
         if pen_pos[2] < z_min or pen_pos[2] > z_max:
             if self.logs:
-                print(f"The pen is currently out of the working area in Z. (current Z : {pen_pos[0]}, min - max : {z_min} - {z_max})")
+                print(f"Out of working area. The pen is currently out of the working area in Z")
             return False
         # If the pen is within the working area, return True
         return True
 
+    def checkingCollision(self, angles):
+        threshold_distance = 0.005 # 5mm safety margin
+        contact_points_robot = p.getContactPoints(self.robot_id, self.robot_id)  
+        contact_points_ground = p.getContactPoints(self.robot_id, self.ground_id)  
 
-    def checkingCollision(self):
-        contact_points_robot = p.getContactPoints(self.robot_id, self.robot_id)  # Self-collision check
-        contact_points_ground = p.getContactPoints(self.robot_id, self.ground_id)  # Ground collision check
+        # Check for potential self-collisions within 5mm
+        # close_contacts_robot = p.getClosestPoints(self.robot_id, self.robot_id, distance=threshold_distance)
+        # close_contacts_ground = p.getClosestPoints(self.robot_id, self.ground_id, distance=threshold_distance)
 
         isInCollision = True
+        if self.logs:
+            print(f"Checking collision for angles: {angles}")
 
         def getLinkName(id):
             return (p.getJointInfo(self.robot_id, id)[12]).decode()
 
-        # Check for self-collisions (ignore wrist-pen collision)
-        if contact_points_robot:
-            for contact in contact_points_robot:
-                if getLinkName(contact[3]) == "wrist_3_link" and getLinkName(contact[4]) == "pen_link":
-                    continue
-                if self.logs:
-                    print(f"⚠️ Self-Collision: {getLinkName(contact[3])} and {getLinkName(contact[4])} are colliding.")
-                isInCollision = False
+        # #Check self-collisions (ignoring wrist-pen collision)
+        for contact in contact_points_robot:
+            if getLinkName(contact[3]) == "wrist_3_link" and getLinkName(contact[4]) == "pen_link":
+                continue
+            if self.logs:
+                print(f"Self-Collision: {getLinkName(contact[3])} and {getLinkName(contact[4])} are colliding.")
+            isInCollision = False
 
-        # Check for ground collision
-        if contact_points_ground:
-            for contact in contact_points_ground:
-                if getLinkName(contact[3]) == "base_link_inertia":
-                    continue
-                if self.logs:
-                    print(f"⚠️ Collision with Ground: {getLinkName(contact[3])} touched the ground!")
-                isInCollision = False  # Collision detected
+        # Check ground collisions
+        for contact in contact_points_ground:
+            if getLinkName(contact[3]) == "base_link_inertia":
+                continue
+            if self.logs:
+                print(f"Collision with Ground: {getLinkName(contact[3])} touched the ground!")
+            isInCollision = False
+
+        # Check if a collision is **about to happen** within 5mm
+        # for contact in close_contacts_robot:
+        #     if (contact[3] == contact[4] or 
+        #         abs(contact[3] - contact[4]) == 1 or 
+        #         getLinkName(contact[3]) == "pen_link" or 
+        #         getLinkName(contact[4]) == "pen_link"):  # Exclude collisions between the same link, adjacent links, or involving the pen link
+        #         continue
+        #     if self.logs:
+        #         print(f"WARNING: {getLinkName(contact[3])} is too close to {getLinkName(contact[4])} (within {threshold_distance})!")
+        #     isInCollision = False  # Prevent movement if too close
+
+        # for contact in close_contacts_ground:
+        #     if getLinkName(contact[3]) == "base_link_inertia":
+        #         continue
+        #     if self.logs:
+        #         print(f"WARNING: {getLinkName(contact[3])} is too close to the ground (within 5mm)!")
+        #     isInCollision = False  # Prevent movement if too close
 
         if not self.check_working_area():
             isInCollision = False
-        
 
-        return isInCollision  
+        if self.logs:
+            print("\n")
+
+        return isInCollision
+
     
 
     
@@ -112,7 +137,7 @@ class RobotCollisionCheck :
             p.resetJointState(self.robot_id, joint_id, angles[i])
         p.stepSimulation()
 
-        return self.checkingCollision()  # True if no collisions, False otherwise
+        return self.checkingCollision(angles)  # True if no collisions, False otherwise
         
     def runSimulation(self, angles):
 

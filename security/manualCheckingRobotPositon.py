@@ -4,12 +4,12 @@ from .globalRobotChecking import GlobalRobotChecking
 
 
 class ValidateRobotPosition():
-    def __init__(self, allRobotPosition: list[list[list[float]]], logs = True):
-        self.logs = logs
+    def __init__(self, allRobotPosition: list[list[list[float]]], logs = True, gui = False):
+    
         self.allRobotPosition = allRobotPosition
         self.finalPositions = []
         self.line= []
-        self.checkingTasks = GlobalRobotChecking(True)
+        self.checkingTasks = GlobalRobotChecking(logs,gui)
         for i in range(len(self.allRobotPosition)):
             self.robotPosition = self.allRobotPosition[i]
 

@@ -98,6 +98,39 @@ test_angles = [
         "angles": [0.9019, -0.28, 1.7852, -3.0774, -1.5697, -0.6689],
         "expected": False #collision with the ground
     },
+     {
+        "angles": [0.5, -1.0, 1.2, -0.8, 1.0, 0.0],  # Inside working area
+        "expected": True
+    },
+    {
+        "angles": [0.3, -0.5, 0.7, -0.4, 0.6, 0.2],  # Inside working area
+        "expected": True
+    },
+    {
+        "angles": [0.0, -1.57, 1.57, 0.0, 0.0, 0.0],  # Inside working area
+        "expected": True
+    },
+    {
+        "angles": [-0.5, -1.2, 1.0, -0.6, 0.8, -0.2],  # Inside working area
+        "expected": True
+    },
+    {
+        "angles": [0.1, -0.8, 0.9, -0.3, 0.4, 0.1],  # Inside working area
+        "expected": True
+    },
+        {
+        "angles": [1.5, -2.0, 2.5, -1.0, 1.0, 0.0],  # Pen position likely exceeds x_max
+        "expected": False
+    },
+    {
+        "angles": [0.0, -3.14, 3.14, 0.0, 0.0, 0.0],  # Pen position likely below z_min
+        "expected": False
+    },
+ 
+    {
+        "angles": [0.0, -3.0, 3.0, 0.0, 0.0, 0.0],  # Pen position likely exceeds z_max
+        "expected": False
+    },
     ]
     
 robot = RobotCollisionCheck(False,True)
