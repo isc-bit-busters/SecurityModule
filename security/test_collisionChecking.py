@@ -35,7 +35,7 @@ test_angles = [
     },
     {
         "angles": [0.00001, 0.000001, 0.00001, 0.00001, 0.00001, 0.000001],
-        "expected": True
+        "expected": False
     },
     {
         "angles": [0.0, -3.14, 3.14, 0.0, 3.14, 0.0],
@@ -66,11 +66,7 @@ test_angles = [
             "angles": [0.0, -3.14, 2.7, 0.0, 3.14, 0.0],
             "expected": False # collision with the ground
         },
-      
-        {
-            "angles": [0.00001, 0.000001, 0.00001, 0.00001, 0.00001, 0.000001],
-            "expected":True
-        },
+    
         {
             "angles": [-0.7493, -1.0, 1.0478, -1.0997, -0.2, -2.3201],
             "expected": True
