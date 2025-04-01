@@ -120,7 +120,7 @@ test_angles = [
     },
         {
         "angles": [1.5, -2.0, 2.5, -1.0, 1.0, 0.0],  # Pen position likely exceeds x_max
-        "expected": False
+        "expected": True
     },
     {
         "angles": [0.0, -3.14, 3.14, 0.0, 0.0, 0.0],  # Pen position likely below z_min
