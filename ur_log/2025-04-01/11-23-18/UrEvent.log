@@ -1,0 +1,3 @@
+2025-04-01 11:23:21,474 - urbasic_rtdeEvent - ERROR - Unknown RTDE command type: K
+2025-04-01 11:23:21,474 - urbasic_rtdeEvent - ERROR - Lost some RTDE at 8810.588 - 407.999999999447 milliseconds since last package
+2025-04-01 11:23:21,481 - urbasic_rtdeEvent - ERROR - Lost some RTDE at 8811.235999999999 - 263.9999999992142 milliseconds since last package

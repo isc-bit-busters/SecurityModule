@@ -1,11 +1,11 @@
-from math import radians
-import json
-import time 
-
-from urbasic import ISCoin, Joint6D
+import time
 
 from .globalRobotChecking import GlobalRobotChecking
 
+from urbasic import ISCoin
+from math import radians
+from urbasic import Joint6D
+import json
 
 # function to read a simulation json and read it to control the robot
 def readJson(path):
@@ -26,21 +26,21 @@ interval = 0.1 # in case of need you cam change the interval
 # Reset any potential error
 iscoin.robot_control.reset_error()
 
-jsonPath = "security/trajectories_test/traj_test_collision_all_joints.json"
+jsonPath = "security/trajectories_test/traj_test_collision_gripper.json"
 waypoints = readJson(jsonPath)
-checking_task = GlobalRobotChecking(waypoints[0],interval=interval, iscoin=iscoin)  #change with the first angle detected by the robot
-checking_task.start()  # Start the task
 
-while True:
+checking_task = GlobalRobotChecking(True, True,interval, iscoin=iscoin)  #change with the first angle detected by the robot
+checking_task.start()  # Start the task
+# for i in waypoints:
+
+# 	jo = Joint6D.createFromRadList(i)
+# 	if not checking_task.check:
+# 		print("Illegal movement detected, stopping the robot.")
+# 		break
+
+# 	#print(f'Joints are at {"iscoin.robot_control.get_actual_joint_positions()"} - going to {jo}')
+# 	iscoin.robot_control.movej(jo, a = radians(5), v = radians(5))
 	
-	# jo = Joint6D.createFromRadList(i)
-	# print("is valid",checking_task.isValid)
-	# if not checking_task.isValid:
-	# 	print("The robot is not in a stable position")
-	# 	test = False 
-	# 	break
-    time.sleep(1)
-	#print(f'Joints are at {"iscoin.robot_control.get_actual_joint_positions()"} - going to {jo}')
-	#iscoin.robot_control.movej(jo, a = radians(20), v = radians(5))
-		
-checking_task.stop()  # Stop the task """
+# checking_task.stop()  # Stop the task """
+while True: 
+	time.sleep(0.1)
