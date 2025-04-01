@@ -22,7 +22,7 @@ dev = [
 packages = ["security"]
 
 [tool.setuptools.package-data]
-security = ["urdf/*.urdf", "urdf/collision/*.stl"]
+security = ["urdf/*.urdf", "urdf/collision/*.stl", "visual/*.dae"]
 
 [tool.uv.sources]
 urbasic = { git = "https://github.com/6figuress/ur3e-control.git" }
