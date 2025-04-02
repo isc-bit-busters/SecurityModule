@@ -135,7 +135,7 @@ def test_checkingCollisonWithItself(test_case):
     angles = test_case["angles"]
     expected = test_case["expected"]
 
-    result = robot.runSimulation(angles)
+    result = robot.isValidConfiguration(angles)
     assert result == expected
 
     
