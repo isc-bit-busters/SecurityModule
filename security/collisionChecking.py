@@ -18,7 +18,7 @@ from urbasic import ISCoin, Joint6D
 
 class RobotCollisionCheck :
     def __init__(self, gui=False, logs=False):
-        self.simu = Simulator(gui, deltaT=1 / 100, log=logs)
+        self.simu = Simulator(gui=gui, deltaT=1 / 100, log=logs)
 
         self.logs =logs
         self.gui = gui
