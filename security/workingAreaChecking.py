@@ -50,12 +50,10 @@ class WorkingAreaRobotChecking():
 
         # Filter points to only include those in the lower hemisphere (z < 0)
         self.points_filtered = points[points[:, 2] < 0]
-        # Further filter points to only include those in the negative y-axis (y < 0)
-        self.points_filtered = self.points_filtered[self.points_filtered[:, 1] < 0]
 
     def _isPointInHalfOfSphere(self, randomPoint):
         """
-        Checks if a given point is within the lower hemisphere and the negative y-axis.
+        Checks if a given point is within the lower hemisphere
 
         Parameters:
         - randomPoint: A list containing the x, y, z coordinates of the point.
@@ -65,9 +63,6 @@ class WorkingAreaRobotChecking():
         """
         # Check if the point is in the lower hemisphere (z < 0)
         if randomPoint[2] < 0:
-            return False
-        # Check if the point is in the negative y-axis (y > 0)
-        if randomPoint[1] > 0:
             return False
         # Check if the point is within the sphere's radius
         return (randomPoint[0] - self.x0)**2 + (randomPoint[1] - self.y0)**2 + (randomPoint[2] - self.z0)**2 <= self.r**2

@@ -1,3 +1,0 @@
-2025-03-28 13:52:20,763 - urbasic_dashboardEvent - ERROR - Dashboard could not connect
-2025-03-28 13:52:20,764 - urbasic_rtdeEvent - ERROR - RTDE connection error: argument must be an int, or have a fileno() method.
-2025-03-28 13:52:20,764 - urbasic_dashboardEvent - WARNING - UR Dashboard connection failed!

@@ -24,10 +24,10 @@ class RobotCollisionCheck :
         self.gui = gui
 
     def check_working_area(self):
-        x_min = -0.31
+        x_min = -0.62
         x_max = 0.62
 
-        y_min = 0
+        y_min = 0.62
         y_max = 0.62
 
         z_min = -0.0
