@@ -75,6 +75,8 @@ def check_collision(robot_id, ground_id):
         for contact in contact_points_ground:
             if getLinkName(contact[3]) == "base_link_inertia":
                 continue
+            if getLinkName(contact[3]) == "pen_link":
+                continue
             print(f"⚠️ Collision with Ground: {getLinkName(contact[3])} touched the ground!")
             isInCollision = False  # Collision detected
 
