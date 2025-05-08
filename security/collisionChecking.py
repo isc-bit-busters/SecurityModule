@@ -27,7 +27,7 @@ class RobotCollisionCheck :
         x_min = -0.62
         x_max = 0.62
 
-        y_min = 0.62
+        y_min = -0.62
         y_max = 0.62
 
         z_min = -0.0
